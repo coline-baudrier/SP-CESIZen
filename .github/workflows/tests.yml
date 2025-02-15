@@ -28,7 +28,7 @@ jobs:
       - name: Run PHPUnit Unit Tests
         run: |
           cd backend
-          vendor/bin/phpunit --testsuite UnitTests --coverage-text --coverage-clover=coverage.xml
+          vendor/bin/phpunit --testsuite UnitTests
 
       - name: Upload PHPUnit Coverage Report
         uses: codecov/codecov-action@v3
