@@ -1,0 +1,34 @@
+name: Run Tests Unit
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Install dependencies
+        run: composer install
+      - name: Run tests
+        run: vendor/bin/phpunit
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm run test
