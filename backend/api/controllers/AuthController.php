@@ -44,7 +44,10 @@ class AuthController
             "iss" => "CESIZen",
             "iat" => time(),
             "exp" => time() + 3600,
-            "sub" => $user['id']
+            "sub" => $user['id'],
+            "username" => $user['username'],
+            "email" => $user['email'],
+            "role" => $user['role'],
         ];
         $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
 
