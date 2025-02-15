@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>tests</directory>
+        <testsuite name="UnitTests">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="FunctionalTests">
+            <directory>tests/functional</directory>
+        </testsuite>
+        <testsuite name="NonRegressionTests">
+            <directory>tests/non_regression</directory>
         </testsuite>
     </testsuites>
 </phpunit>
