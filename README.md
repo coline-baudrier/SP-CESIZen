@@ -44,10 +44,24 @@ npm run dev
 ---
 
 ## 🛠️ Tests & Qualité
+```bash
+backend/tests/
+├── unit/  # Tests unitaires (isolés, avec mocks)
+│   ├── UserTest.php
+│   ├── AuthTest.php
+│   ├── EmailTest.php
+├── functional/  # Tests fonctionnels (simulent des scénarios complets)
+│   ├── AuthFunctionalTest.php
+│   ├── EmotionTrackerFunctionalTest.php
+├── non_regression/  # Tests de non-régression (vérifient les anciens comportements)
+│   ├── UserNonRegressionTest.php
+│   ├── AuthNonRegressionTest.php
+│   ├── GlobalFunctionalitiesTest.php
+```
 ### ✅ Tests Backend (PHPUnit)
 ```bash
 cd backend
-vendor/bin/phpunit
+vendor/bin/phpunit --testdox --colors=always --configuration phpunit.xml
 ```
 
 ### ✅ Tests Frontend (Vitest)
