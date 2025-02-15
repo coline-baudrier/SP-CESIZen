@@ -27,7 +27,7 @@ cd SP-CESIZen
 cd backend
 composer install
 cp config/.env.example config/.env  # Configurer la BDD et la secret key
-php -S localhost:8000 -t public
+php -S localhost:8000 -t api
 ```
 📐 **L'API sera disponible sur** `http://localhost:8000`
 
