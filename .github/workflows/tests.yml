@@ -30,12 +30,6 @@ jobs:
           cd backend
           vendor/bin/phpunit --testsuite UnitTests
 
-      - name: Upload PHPUnit Coverage Report
-        uses: codecov/codecov-action@v3
-        with:
-          files: backend/coverage.xml
-          flags: php-backend
-          fail_ci_if_error: true
 
   functional-tests:
     name: Run Functional Tests
@@ -57,14 +51,7 @@ jobs:
       - name: Run PHPUnit Functional Tests
         run: |
           cd backend
-          vendor/bin/phpunit --testsuite FunctionalTests --coverage-text --coverage-clover=coverage.xml
-
-      - name: Upload PHPUnit Functional Coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: backend/coverage.xml
-          flags: php-backend-functional
-          fail_ci_if_error: true
+          vendor/bin/phpunit --testsuite FunctionalTests -
 
   non-regression-tests:
     name: Run Non-Regression Tests
@@ -86,11 +73,4 @@ jobs:
       - name: Run PHPUnit Non-Regression Tests
         run: |
           cd backend
-          vendor/bin/phpunit --testsuite NonRegressionTests --coverage-text --coverage-clover=coverage.xml
-
-      - name: Upload PHPUnit Non-Regression Coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: backend/coverage.xml
-          flags: php-backend
-          fail_ci_if_error: true
+          vendor/bin/phpunit --testsuite NonRegressionTests
