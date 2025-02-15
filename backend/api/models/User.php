@@ -10,20 +10,32 @@ class User
         $this->pdo = $db;
     }
 
-    public function create($username, $email, $password)
+    public function createUser($username, $email, $password, $role = 1)
     {
         try {
+            if ($this->getUserByEmail($email)) {
+                return ["error" => "Email déjà utilisé"];
+            }
+
+            if ($this->getUserByUsername($username)) {
+                return ["error" => "Nom d'utilisateur déjà pris"];
+            }
+
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-            $sql = "INSERT INTO " . $this->table . " (username, email, password) VALUES (:username, :email, :password)";
+            $sql = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
             $query = $this->pdo->prepare($sql);
-            return $query->execute([
+            $query->execute([
                 ':username' => $username,
                 ':email' => $email,
-                ':password' => $hashedPassword
+                ':password' => $hashedPassword,
+                ':role' => $role
             ]);
+
+            return ["message" => "Utilisateur créé avec succès", "role" => $role];
+
         } catch (PDOException $e) {
             error_log("Erreur SQL: " . $e->getMessage());
-            return false;
+            return ["error" => "Erreur lors de la création du compte"];
         }
     }
 

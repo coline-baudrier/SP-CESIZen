@@ -4,40 +4,41 @@ require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class AuthController
 {
     private $userModel;
+    private $jwtSecret;
 
     public function __construct($db)
     {
         $this->userModel = new User($db);
+        $this->jwtSecret = $_ENV['JWT_SECRET'] ?? 'secret_key'; // Fallback si ENV est manquant
     }
 
     public function register($data)
     {
         if (!isset($data['username'], $data['email'], $data['password'])) {
-            return json_encode(["error" => "Données incomplètes"]);
+            return ["error" => "Données incomplètes"];
         }
 
         if ($this->userModel->getUserByEmail($data['email'])) {
-            return json_encode(["error" => "Email déjà utilisé"]);
+            return ["error" => "Email déjà utilisé"];
         }
 
-        $success = $this->userModel->create($data['username'], $data['email'], $data['password']);
-
-        return json_encode($success ? ["message" => "Utilisateur créé"] : ["error" => "Erreur lors de l'inscription"]);
+        return $this->userModel->createUser($data['username'], $data['email'], $data['password']);
     }
 
     public function login($data)
     {
         if (!isset($data['email'], $data['password'])) {
-            return json_encode(["error" => "Données incomplètes"]);
+            return ["error" => "Données incomplètes"];
         }
 
         $user = $this->userModel->getUserByEmail($data['email']);
         if (!$user || !password_verify($data['password'], $user['password'])) {
-            return json_encode(["error" => "Identifiants incorrects"]);
+            return ["error" => "Identifiants incorrects"];
         }
 
         $payload = [
@@ -49,8 +50,12 @@ class AuthController
             "email" => $user['email'],
             "role" => $user['role'],
         ];
-        $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
 
-        return json_encode(["token" => $token]);
+        try {
+            $token = JWT::encode($payload, $this->jwtSecret, 'HS256');
+            return ["token" => $token];
+        } catch (Exception $e) {
+            return ["error" => "Erreur lors de la génération du token JWT"];
+        }
     }
 }

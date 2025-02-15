@@ -126,4 +126,33 @@ class UserController
 
         return $result;
     }
+
+    public function createAdmin($token, $data)
+    {
+        try {
+            $auth = $this->checkAuth($token);
+            if (isset($auth->error)) {
+                return ["error" => $auth->error];
+            }
+
+            if ($auth->role !== 2) { // 🔹 Vérification Admin
+                return ["error" => "Accès refusé"];
+            }
+
+            $username = $data['username'] ?? null;
+            $email = $data['email'] ?? null;
+            $password = $data['password'] ?? null;
+
+            if (!$username || !$email || !$password) {
+                return ["error" => "Données incomplètes"];
+            }
+
+            // Création d'un utilisateur avec `role = 2` (Admin)
+            return $this->userModel->createUser($username, $email, $password, 2);
+
+        } catch (Exception $e) {
+            return ["error" => "Erreur lors de la création de l'administrateur"];
+        }
+    }
+
 }
