@@ -16,15 +16,22 @@ try {
     }
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['user_id'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Données incomplètes"]);
+        exit;
+    }
+
     $db = Database::getConnection();
-    $userController = new UserController($db);
+    $controller = new UserController($db);
+    $result = $controller->deleteUser($token, $data['user_id']);
 
-    $result = $userController->deleteUser($token);
-
-    http_response_code(isset($result['error']) ? 401 : 200);
+    http_response_code(isset($result['error']) ? 403 : 200);
     echo json_encode($result);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["error" => "Erreur serveur : " . $e->getMessage()]);
 }

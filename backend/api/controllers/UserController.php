@@ -14,96 +14,116 @@ class UserController
         $this->userModel = new User($db);
     }
 
-    public function getProfile($token)
+    private function checkAuth($token)
     {
         try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
-            $userId = $decoded->sub;
-
-            $user = $this->userModel->getUserById($userId);
-            if (!$user) {
-                return ["error" => "Utilisateur non trouvé"];
+            if (!$token) {
+                return ["error" => "Token manquant"];
             }
 
-            unset($user['password']);
-            return ["profile" => $user];
-
+            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+            return $decoded;
         } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+            return (object) ["error" => "Token invalide ou expiré"];
         }
     }
 
-    public function deleteUser($token) {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
-            $userId = $decoded->sub;
-
-            $user = $this->userModel->delete($userId);
-            if (!$user) {
-                return ["error" => "Utilisateur non trouvé"];
-            }
-
-            return ["message" => "Utilisateur supprimé."];
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+    public function getProfile($token)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) {
+            return ["error" => $auth->error];
         }
+
+        $userId = $auth->sub;
+
+        $user = $this->userModel->getUserById($userId);
+        if (!$user) {
+            return ["error" => "Utilisateur non trouvé"];
+        }
+
+        unset($user['password']);
+        return ["profile" => $user];
+    }
+
+    public function deleteUser($token, $userId)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) {
+            return ["error" => $auth->error];
+        }
+
+        if ($auth->role !== 2) {
+            return ["error" => "Accès refusé"];
+        }
+
+        $user = $this->userModel->delete($userId);
+        if (!$user) {
+            return ["error" => "Utilisateur non trouvé"];
+        }
+
+        return ["message" => "Utilisateur supprimé."];
     }
 
     public function updateUser($token, $data)
     {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
-            $userId = $decoded->sub;
-
-            return $this->userModel->updateUser($userId, $data);
-
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) {
+            return ["error" => $auth->error];
         }
+
+        $userId = $auth->sub;
+
+        return $this->userModel->updateUser($userId, $data);
     }
 
-    public function changeStatus($userId)
+    public function changeStatus($token, $userId)
     {
-        try {
-            $result = $this->userModel->changeStatus($userId);
-
-            if (!$result) {
-                return ["error" => "Utilisateur non trouvé ou mise à jour échouée"];
-            }
-
-            return $result;
-        } catch (Exception $e) {
-            return ["error" => "Erreur lors de la mise à jour du statut"];
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) {
+            return ["error" => $auth->error];
         }
+
+        if ($auth->role !== 2) {
+            return ["error" => "Accès refusé"];
+        }
+
+        $result = $this->userModel->changeStatus($userId);
+
+        if (!$result) {
+            return ["error" => "Utilisateur non trouvé ou mise à jour échouée"];
+        }
+
+        return $result;
     }
 
-    public function getUsers() {
-        try {
-            $result = $this->userModel->getAll();
-
-            if (!$result) {
-                return ["error" => "Aucun utilisateur trouvé."];
-            }
-
-            return $result;
-        } catch (Exception $e) {
-            return ["error" => "Erreur lors de la récupération des  utilisateurs"];
-        }
-    }
-
-    public function changePassword($userEmail, $newPassword)
+    public function getUsers($token)
     {
-        try {
-            $result = $this->userModel->passwordForgot($userEmail, $newPassword);
-
-            if (!$result) {
-                return ["error" => "Utilisateur non trouvé ou mise à jour échouée"];
-            }
-
-            return $result;
-        }catch (Exception $e) {
-            return ["error" => "Erreur lors de la mise à jour du mot de passe"];
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) {
+            return ["error" => $auth->error];
         }
+
+        if ($auth->role !== 2) {
+            return ["error" => "Accès refusé"];
+        }
+
+        $result = $this->userModel->getAll();
+        if (!$result) {
+            return ["error" => "Aucun utilisateur trouvé."];
+        }
+
+        return $result;
     }
 
+    public function changePassword($email, $newPassword)
+    {
+        $result = $this->userModel->passwordForgot($email, $newPassword);
+
+        if (!$result) {
+            return ["error" => "Utilisateur non trouvé ou mise à jour échouée"];
+        }
+
+        return $result;
+    }
 }
