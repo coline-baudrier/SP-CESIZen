@@ -2,10 +2,15 @@
     "name": "coline/backend",
     "autoload": {
         "psr-4": {
-            "Coline\\Backend\\": "src/",
-            "Coline\\Backend\\tests": "tests/"
+            "Coline\\Backend\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Coline\\Backend\\Tests\\": "tests/"
+        }
+    },
+
     "authors": [
         {
             "name": "coline-baudrier",
