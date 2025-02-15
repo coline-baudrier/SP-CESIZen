@@ -1,39 +1,108 @@
-# vue-project
+# 🌿 SP-CESIZen – Gestion du Stress et Santé Mentale
 
-This template should help get you started developing with Vue 3 in Vite.
+> **SP-CESIZen** est une application PWA conçue pour aider à la gestion du stress et au suivi des émotions. Développée en **Vue.js + TypeScript** pour le frontend et **PHP + MySQL** pour le backend.
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 Fonctionnalités Principales
+✅ **Authentification sécurisée** (JWT)  
+✅ **Tracker d'émotions** pour suivre son bien-être  
+✅ **Exercices de respiration** interactifs  
+✅ **Tests de stress** pour mieux comprendre son état mental  
+✅ **PWA : Installation sur mobile & offline**  
+✅ **API RESTful pour interagir avec la base de données**  
+✅ **Gestion des favoris et historique personnel**
 
-## Type Support for `.vue` Imports in TS
+---
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+## 💂️ Installation & Setup
+### 🔄 1. Cloner le projet
+```bash
+git clone https://github.com/coline-baudrier/SP-CESIZen.git
+cd SP-CESIZen
 ```
 
-### Compile and Hot-Reload for Development
+### 🚀 2. Backend (PHP + MySQL)
+```bash
+cd backend
+composer install
+cp config/.env.example config/.env  # Configurer la BDD et la secret key
+php -S localhost:8000 -t api
+```
+📐 **L'API sera disponible sur** `http://localhost:8000`
 
-```sh
+---
+
+### 🎨 3. Frontend (Vue.js + TypeScript)
+```bash
+cd frontend
+npm install
 npm run dev
 ```
+📐 **L'application sera disponible sur** `http://localhost:5173`
 
-### Type-Check, Compile and Minify for Production
+---
 
-```sh
-npm run build
+## 🛠️ Tests & Qualité
+```bash
+backend/tests/
+├── unit/  # Tests unitaires (isolés, avec mocks)
+│   ├── UserTest.php
+│   ├── AuthTest.php
+│   ├── EmailTest.php
+├── functional/  # Tests fonctionnels (simulent des scénarios complets)
+│   ├── AuthFunctionalTest.php
+│   ├── EmotionTrackerFunctionalTest.php
+├── non_regression/  # Tests de non-régression (vérifient les anciens comportements)
+│   ├── UserNonRegressionTest.php
+│   ├── AuthNonRegressionTest.php
+│   ├── GlobalFunctionalitiesTest.php
+```
+### ✅ Tests Backend (PHPUnit)
+```bash
+cd backend
+vendor/bin/phpunit --testdox --colors=always --configuration phpunit.xml
 ```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
+### ✅ Tests Frontend (Vitest)
+```bash
+cd frontend
+npm run test
 ```
+
+---
+
+## 🔧 Workflow Git & CI/CD
+**Branches principales :**
+- `main` → **Production**
+- `dev` → **Développement**
+- `test` → **Tests avant merge**
+
+**Convention des branches :**
+- `feature/nom-fonctionnalité` (Ajout de nouvelle fonctionnalité)
+- `fix/nom-bug` (Correction de bug)
+- `hotfix/nom-patch` (Correction urgente en production)
+
+✅ **CI/CD avec GitHub Actions :**
+- **Lint & Tests** à chaque push
+- **Déploiement automatique** (en production)
+
+---
+
+## 💪 TODO & Améliorations
+- [ ] Ajouter la gestion des notifications 📩
+- [ ] Améliorer l’UI avec des animations ⚡
+- [ ] Ajouter un mode sombre 🌙
+
+📌 **Propose tes idées en créant une issue !** 🛠️
+
+---
+
+## 📄 Licence
+Ce projet est sous licence **MIT**.
+
+---
+
+## 💌 Contact & Contributeurs
+👩‍💻 **Développé par** [@coline-baudrier](https://github.com/coline-baudrier)  
+📩 **Contact :** coline.baudrier@outlook.com
