@@ -113,6 +113,10 @@ class EmotionController {
             return ["error" => $auth->error];
         }
 
+        if ($auth->role !== 2) {
+            return ["error" => "Accès refusé"];
+        }
+
         $result = $this->emotionModel->create($name, $base_id);
 
         if ($result === "Erreur : cette émotion existe déjà.") {
@@ -134,18 +138,21 @@ class EmotionController {
                 return ["error" => $auth->error];
             }
 
+            if ($auth->role !== 2) {
+                return ["error" => "Accès refusé"];
+            }
+
             $emotion = $this->emotionModel->update($id, $data);
             if (isset($emotion['error'])) {
-                return $emotion; // Retourner directement l'erreur de `update()`
+                return $emotion;
             }
 
             return ["message" => "Emotion mise à jour"];
 
         } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+            return ["error" => "Erreur lors de la mise à jour de l'émotion"];
         }
     }
-
 
     public function changeStatus($token, $id) {
         try {
@@ -154,14 +161,18 @@ class EmotionController {
                 return ["error" => $auth->error];
             }
 
-            $emotion = $this->emotionModel->changeStatus($id);
-            if (!$emotion) {
-                return ["error" => "Emotion non trouvée."];
+            if ($auth->role !== 2) {
+                return ["error" => "Accès refusé"];
             }
 
-            return  ["message" => "Emotion invalidée."];
+            $emotion = $this->emotionModel->changeStatus($id);
+            if (!$emotion) {
+                return ["error" => "Émotion non trouvée."];
+            }
+
+            return  ["message" => "Statut de l'émotion modifié."];
         } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+            return ["error" => "Erreur lors de la modification du statut de l'émotion"];
         }
     }
 }
