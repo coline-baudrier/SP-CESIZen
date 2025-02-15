@@ -4,7 +4,7 @@ require_once '../controllers/UserController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: DELETE");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 try {
@@ -18,7 +18,7 @@ try {
     $token = str_replace('Bearer ', '', $headers['Authorization']);
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!$data || !isset($data['user_id'])) {
+    if (!$data || !isset($data['username']) || !isset($data['email']) || !isset($data['password'])) {
         http_response_code(400);
         echo json_encode(["error" => "Données incomplètes"]);
         exit;
@@ -26,7 +26,7 @@ try {
 
     $db = Database::getConnection();
     $controller = new UserController($db);
-    $result = $controller->deleteUser($token, $data['user_id']);
+    $result = $controller->createAdmin($token, $data);
 
     http_response_code(isset($result['error']) ? 403 : 200);
     echo json_encode($result);
