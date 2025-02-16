@@ -13,11 +13,11 @@ class EmotionTracker
     public function getJournal($userId)
     {
         try {
-            $sql = "SELECT e.id, et.emotion_id, em.name AS emotion_name, et.intensity, et.note, et.created_at, et.updated_at 
-                    FROM " . $this->table . " et
-                    JOIN emotions em ON et.emotion_id = em.id
-                    WHERE et.user_id = :user_id
-                    ORDER BY et.created_at DESC";
+            $sql = "SELECT et.id, et.emotion_id, em.name AS emotion_name, et.intensity, et.note, et.created_at, et.updated_at 
+                FROM " . $this->table . " et
+                JOIN emotions em ON et.emotion_id = em.id
+                WHERE et.user_id = :user_id
+                ORDER BY et.created_at DESC";
             $query = $this->pdo->prepare($sql);
             $query->execute([':user_id' => $userId]);
             return $query->fetchAll(PDO::FETCH_ASSOC) ?: [];
