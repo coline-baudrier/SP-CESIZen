@@ -11,7 +11,6 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     VitePWA({
-      // 🛠️ Correction ici (fermeture de parenthèse manquante)
       registerType: 'autoUpdate',
       manifest: {
         name: 'CESIZen',
