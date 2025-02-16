@@ -13,33 +13,30 @@ class UserFavoriteActivityNonRegressionTest extends TestCase
 
     protected function setUp(): void
     {
-        // Simuler une base SQLite en mémoire
         $this->mockPDO = new PDO('sqlite::memory:');
         $this->mockPDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Création des tables nécessaires
         $this->mockPDO->exec("CREATE TABLE relaxation_activities (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);");
         $this->mockPDO->exec("CREATE TABLE user_favorite_activities (user_id INTEGER, activity_id INTEGER);");
 
-        // Ajout d'activités fictives
         $this->mockPDO->exec("INSERT INTO relaxation_activities (name) VALUES ('Yoga'), ('Méditation')");
 
-        // Initialisation du modèle et du contrôleur
         $this->controller = new UserFavoriteActivityController($this->mockPDO);
 
-        // Générer un JWT fictif
-        $this->mockToken = JWT::encode(["sub" => 1], "test_secret_key", 'HS256'); // Vrai JWT signé
-        // JWT simplifié pour le test
+        // Définition correcte de JWT_SECRET
+        putenv("JWT_SECRET=test_secret_key");
+        $_ENV['JWT_SECRET'] = getenv('JWT_SECRET');
 
-        putenv("JWT_SECRET=" . ($_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET')));
-        $_ENV['JWT_SECRET'] = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET');
+        // Génération correcte du token
+        $this->mockToken = JWT::encode(["sub" => 1], $_ENV['JWT_SECRET'], 'HS256');
 
+        print_r("JWT_SECRET utilisé : " . $_ENV['JWT_SECRET'] . "\n"); // Vérification
     }
 
     private function getFavorites()
     {
         $result = $this->controller->getFavorites($this->mockToken);
-        return is_string($result) ? json_decode($result, true) : $result;
+        return is_string($result) ? json_decode($result, true) ?? [] : $result;
     }
 
     public function testAddFavoriteNonRegression()
