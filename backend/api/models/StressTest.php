@@ -140,4 +140,19 @@ class StressTest
         }
     }
 
+    public function getAllDiagnosticsByUser($userId)
+    {
+        try {
+            $sql = "SELECT id, score, diagnosis_date FROM stress_diagnostics WHERE user_id = :user_id ORDER BY diagnosis_date DESC";
+            $query = $this->pdo->prepare($sql);
+            $query->execute([':user_id' => $userId]);
+            return ["diagnostics" => $query->fetchAll(PDO::FETCH_ASSOC) ?: []];
+
+        } catch (PDOException $e) {
+            error_log("Erreur SQL: " . $e->getMessage());
+            return ["error" => "Erreur lors de la récupération des diagnostics"];
+        }
+    }
+
+
 }

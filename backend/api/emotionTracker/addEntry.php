@@ -1,10 +1,10 @@
 <?php
 require_once '../../database.php';
-require_once '../controllers/EmotionController.php';
+require_once '../controllers/EmotionTrackerController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 try {
@@ -16,11 +16,19 @@ try {
     }
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
-    $db = Database::getConnection();
-    $controller = new EmotionController($db);
-    $result = $controller->getBaseEmotions($token);
+    $data = json_decode(file_get_contents("php://input"), true);
 
-    http_response_code(200);
+    if (!$data || !isset($data['emotion_id'], $data['intensity'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Données incomplètes"]);
+        exit;
+    }
+
+    $db = Database::getConnection();
+    $controller = new EmotionTrackerController($db);
+    $result = $controller->addEmotion($token, $data);
+
+    http_response_code(isset($result['error']) ? 400 : 201);
     echo json_encode($result);
 
 } catch (Exception $e) {

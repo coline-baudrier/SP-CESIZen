@@ -1,6 +1,6 @@
 <?php
 require_once '../../database.php';
-require_once '../controllers/EmotionController.php';
+require_once '../controllers/EmotionTrackerController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -17,8 +17,8 @@ try {
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
     $db = Database::getConnection();
-    $controller = new EmotionController($db);
-    $result = $controller->getBaseEmotions($token);
+    $controller = new EmotionTrackerController($db);
+    $result = $controller->getJournal($token);
 
     http_response_code(200);
     echo json_encode($result);

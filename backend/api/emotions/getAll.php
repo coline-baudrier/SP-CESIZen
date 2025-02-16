@@ -16,16 +16,14 @@ try {
     }
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
-
     $db = Database::getConnection();
-    $emotionController = new EmotionController($db);
+    $controller = new EmotionController($db);
+    $result = $controller->getEmotions($token);
 
-    $result = $emotionController->getEmotions($token);
-
-    http_response_code(isset($result['error']) ? 401 : 200);
+    http_response_code(200);
     echo json_encode($result);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["error" => "Erreur serveur"]);
 }

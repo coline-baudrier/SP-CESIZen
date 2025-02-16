@@ -18,7 +18,7 @@ try {
     $token = str_replace('Bearer ', '', $headers['Authorization']);
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!$data || !isset($data['name']) || !isset($data['base_id'])) {
+    if (!$data || !isset($data['name'], $data['base_id'])) {
         http_response_code(400);
         echo json_encode(["error" => "Données incomplètes"]);
         exit;
@@ -28,10 +28,10 @@ try {
     $controller = new EmotionController($db);
     $result = $controller->createEmotion($token, $data['name'], $data['base_id']);
 
-    http_response_code(isset($result['error']) ? 403 : 200);
+    http_response_code(isset($result['error']) ? 403 : 201);
     echo json_encode($result);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => "Erreur serveur : " . $e->getMessage()]);
+    echo json_encode(["error" => "Erreur serveur"]);
 }
