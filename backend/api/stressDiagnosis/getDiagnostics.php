@@ -1,12 +1,11 @@
 <?php
+require_once '../../database.php';
+require_once '../controllers/StressTestController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: PATCH");
+header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-require_once '../../database.php';
-require_once '../controllers/UserController.php';
 
 try {
     $headers = getallheaders();
@@ -18,20 +17,11 @@ try {
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
     $db = Database::getConnection();
-    $userController = new UserController($db);
+    $controller = new StressTestController($db);
 
-    // Récupérer les données envoyées en JSON
-    $data = json_decode(file_get_contents("php://input"), true);
+    $result = $controller->getDiagnostics($token);
 
-    if (!isset($data['user_id'])) {
-        http_response_code(400);
-        echo json_encode(["error" => "L'ID de l'utilisateur est requis"]);
-        exit;
-    }
-
-    $result = $userController->changeStatus($token, $data['user_id']);
-
-    http_response_code(isset($result['error']) ? 403 : 200);
+    http_response_code(isset($result['error']) ? 401 : 200);
     echo json_encode($result);
 
 } catch (Exception $e) {

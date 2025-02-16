@@ -1,26 +1,22 @@
 <?php
 require_once '../../database.php';
-require_once '../controllers/UserController.php';
+require_once '../controllers/UserFavoriteActivityController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 try {
     $headers = getallheaders();
-    if (!isset($headers['Authorization'])) {
-        http_response_code(401);
-        echo json_encode(["error" => "Token manquant"]);
-        exit;
-    }
-
     $token = str_replace('Bearer ', '', $headers['Authorization']);
-    $db = Database::getConnection();
-    $userController = new UserController($db);
-    $result = $userController->getUsers($token);
+    $data = json_decode(file_get_contents("php://input"), true);
 
-    http_response_code(isset($result['error']) ? 403 : 200);
+    $db = Database::getConnection();
+    $controller = new UserFavoriteActivityController($db);
+    $result = $controller->addFavorite($token, $data);
+
+    http_response_code(isset($result['error']) ? 400 : 201);
     echo json_encode($result);
 
 } catch (Exception $e) {

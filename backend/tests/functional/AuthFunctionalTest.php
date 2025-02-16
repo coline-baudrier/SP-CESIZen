@@ -21,9 +21,11 @@ class AuthFunctionalTest extends TestCase
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT,
                 email TEXT UNIQUE,
-                password TEXT
+                password TEXT,
+                role INTEGER DEFAULT 1
             )
         ");
+
 
         $this->authController = new AuthController($this->mockPDO);
 
@@ -41,11 +43,12 @@ class AuthFunctionalTest extends TestCase
             'password' => 'password123'
         ];
 
-        $registerResponse = json_decode($this->authController->register($registerData), true);
+        $registerResponse = $this->authController->register($registerData);
+
 
         // Vérifier que l'inscription a bien fonctionné
         $this->assertArrayHasKey('message', $registerResponse);
-        $this->assertEquals('Utilisateur créé', $registerResponse['message']);
+        $this->assertEquals('Utilisateur créé avec succès', $registerResponse['message']);
 
         // 🔹 Vérifier que l'utilisateur est bien en base de données
         $stmt = $this->mockPDO->prepare("SELECT * FROM users WHERE email = ?");
@@ -56,7 +59,7 @@ class AuthFunctionalTest extends TestCase
 
         // 🔹 Simulation de la connexion avec les mêmes identifiants
         $loginData = ['email' => 'test@example.com', 'password' => 'password123'];
-        $loginResponse = json_decode($this->authController->login($loginData), true);
+        $loginResponse = $this->authController->login($loginData);
 
         // Vérifier que le token JWT est bien retourné
         $this->assertArrayHasKey('token', $loginResponse);

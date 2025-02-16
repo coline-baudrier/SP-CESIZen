@@ -1,6 +1,6 @@
 <?php
 require_once '../../database.php';
-require_once '../controllers/AuthController.php';
+require_once '../controllers/StressTestController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -8,13 +8,19 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
 try {
-    $db = Database::getConnection();
-    $authController = new AuthController($db);
-
     $data = json_decode(file_get_contents("php://input"), true);
-    $result = $authController->login($data);
 
-    http_response_code(isset($result['error']) ? 401 : 200);
+    if (!$data || !isset($data['test_id'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Test ID requis"]);
+        exit;
+    }
+
+    $db = Database::getConnection();
+    $controller = new StressTestController($db);
+    $result = $controller->getTestQuestions($data);
+
+    http_response_code(isset($result['error']) ? 400 : 200);
     echo json_encode($result);
 
 } catch (Exception $e) {
