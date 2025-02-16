@@ -21,7 +21,7 @@ class EmotionTrackerController
                 return ["error" => "Token manquant"];
             }
 
-            $decoded = JWT::decode($token, new Key(getenv('JWT_SECRET') ?: ($_ENV['JWT_SECRET'] ?? 'fallback_secret'), 'HS256'));
+            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
             return $decoded;
         } catch (Exception $e) {
             return (object) ["error" => "Token invalide ou expiré"];
