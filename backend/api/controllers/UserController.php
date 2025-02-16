@@ -97,24 +97,26 @@ class UserController
         return $result;
     }
 
-    public function getUsers($token)
-    {
-        $auth = $this->checkAuth($token);
-        if (isset($auth->error)) {
-            return ["error" => $auth->error];
-        }
+    public function getUsers($token) {
+        try {
+            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
 
-        if ($auth->role !== 2) {
-            return ["error" => "Accès refusé"];
-        }
+            if ($decoded->role !== 2) {
+                return ["error" => "Accès refusé"];
+            }
 
-        $result = $this->userModel->getAll();
-        if (!$result) {
-            return ["error" => "Aucun utilisateur trouvé."];
-        }
+            $result = $this->userModel->getAll();
 
-        return $result;
+            if (!$result) {
+                return ["error" => "Aucun utilisateur trouvé."];
+            }
+
+            return $result;
+        } catch (Exception $e) {
+            return ["error" => "Erreur lors de la récupération des utilisateurs"];
+        }
     }
+
 
     public function changePassword($email, $newPassword)
     {

@@ -3,12 +3,20 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: PATCH");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 require_once '../../database.php';
 require_once '../controllers/UserController.php';
 
 try {
+    $headers = getallheaders();
+    if (!isset($headers['Authorization'])) {
+        http_response_code(401);
+        echo json_encode(["error" => "Token manquant"]);
+        exit;
+    }
+
+    $token = str_replace('Bearer ', '', $headers['Authorization']);
     $db = Database::getConnection();
     $userController = new UserController($db);
 
@@ -21,12 +29,12 @@ try {
         exit;
     }
 
-    $result = $userController->changeStatus($data['user_id']);
+    $result = $userController->changeStatus($token, $data['user_id']);
 
-    http_response_code(isset($result['error']) ? 400 : 200);
+    http_response_code(isset($result['error']) ? 403 : 200);
     echo json_encode($result);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["error" => "Erreur serveur : " . $e->getMessage()]);
 }
