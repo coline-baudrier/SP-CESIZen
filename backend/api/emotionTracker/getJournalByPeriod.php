@@ -1,10 +1,10 @@
 <?php
 require_once '../../database.php';
-require_once '../controllers/EmotionController.php';
+require_once '../controllers/EmotionTrackerController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 try {
@@ -16,9 +16,17 @@ try {
     }
 
     $token = str_replace('Bearer ', '', $headers['Authorization']);
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data || !isset($data['period'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Période requise"]);
+        exit;
+    }
+
     $db = Database::getConnection();
-    $controller = new EmotionController($db);
-    $result = $controller->getBaseEmotions($token);
+    $controller = new EmotionTrackerController($db);
+    $result = $controller->getJournalByPeriod($token, $data['period']);
 
     http_response_code(200);
     echo json_encode($result);

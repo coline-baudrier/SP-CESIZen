@@ -14,6 +14,20 @@ class StressTestController
         $this->stressTestModel = new StressTest($db);
     }
 
+    private function checkAuth($token)
+    {
+        try {
+            if (!$token) {
+                return ["error" => "Token manquant"];
+            }
+
+            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+            return $decoded;
+        } catch (Exception $e) {
+            return (object) ["error" => "Token invalide ou expiré"];
+        }
+    }
+
     // Récupérer la liste des tests (Accès public)
     public function getTests()
     {
@@ -181,5 +195,16 @@ class StressTestController
             return ["error" => "Token invalide"];
         }
     }
+
+    public function getAllStressDiagnostics($token)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) {
+            return ["error" => $auth->error];
+        }
+
+        return $this->stressTestModel->getAllDiagnosticsByUser($auth->sub);
+    }
+
 
 }
