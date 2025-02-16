@@ -5,6 +5,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Permet d'envoyer les cookies de session si nécessaires
 });
 
 // Ajout du token JWT directement dans les requêtes

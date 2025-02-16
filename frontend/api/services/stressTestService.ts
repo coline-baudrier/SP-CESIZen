@@ -1,7 +1,7 @@
-import api from '../index';
-import { ENDPOINTS } from '../endpoints';
-import { StressTest, StressTestQuestion } from '../interfaces/StressTest';
-import { StressDiagnostic } from '../interfaces/StressDiagnostic';
+import api from '../index.ts';
+import { ENDPOINTS } from '../endpoints.ts';
+import { StressTest, StressTestQuestion } from '../interfaces/StressTest.ts';
+import { StressDiagnostic } from '../interfaces/StressDiagnostic.ts';
 
 export const stressService = {
   async getAllTests(): Promise<StressTest[]> {

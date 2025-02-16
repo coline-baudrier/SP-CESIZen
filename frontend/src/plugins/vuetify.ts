@@ -7,15 +7,15 @@ import '@mdi/font/css/materialdesignicons.css';
 const myTheme = {
   dark: false,
   colors: {
-    primary: '#4A677D', // Bleu-gris profond (inspiration ciel d’hiver)
-    secondary: '#6D98A6', // Bleu doux naturel
-    accent: '#A5C9CA', // Bleu-vert apaisant
-    background: '#F0F5F9', // Blanc bleuté (clair et reposant)
-    surface: '#E3EAF0', // Bleu-gris clair
-    error: '#E57373', // Rouge adouci
-    success: '#81C784', // Vert pastel
-    warning: '#FFB74D', // Orange pastel
-    info: '#64B5F6', // Bleu pastel
+    primary: '#2C5F2D', // Vert Forêt
+    secondary: '#E1A722', // Jaune Moutarde
+    accent: '#A7C4A0', // Vert Sauge
+    background: '#F2E6D0', // Beige Naturel
+    surface: '#F0F5F9', // Blanc bleuté
+    error: '#E57373',
+    success: '#81C784',
+    warning: '#FFB74D',
+    info: '#64B5F6',
   },
 };
 

@@ -6,6 +6,8 @@ import { createPinia } from 'pinia';
 
 import vuetify from './plugins/vuetify';
 
+import '@/assets/main.css';
+
 import App from './App.vue';
 import router from './router';
 

@@ -18,8 +18,8 @@ export default defineConfig({
         description: 'Application pour la gestion du stress et de la santé mentale',
         start_url: '/',
         display: 'standalone',
-        theme_color: '#4DBA87',
-        background_color: '#ffffff',
+        theme_color: '#2C5F2D',
+        background_color: '#F2E6D0',
         icons: [
           {
             src: '/icons/icon-192x192.png',
@@ -34,6 +34,9 @@ export default defineConfig({
         ],
       },
       workbox: {
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /^http:\/\/localhost:8000\/.*/i,

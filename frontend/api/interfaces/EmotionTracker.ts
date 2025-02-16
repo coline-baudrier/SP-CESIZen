@@ -1,4 +1,4 @@
-import { Emotion } from './Emotion';
+import { Emotion } from './Emotion.ts';
 
 export interface EmotionTracker {
   id: number;

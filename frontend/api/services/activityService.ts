@@ -1,7 +1,7 @@
-import api from '../index';
-import { ENDPOINTS } from '../endpoints';
-import { RelaxationActivity } from '../interfaces/RelaxationActivity';
-import { UserFavoriteActivity } from '../interfaces/UserFavoriteActivity';
+import api from '../index.ts';
+import { ENDPOINTS } from '../endpoints.ts';
+import { RelaxationActivity } from '../interfaces/RelaxationActivity.ts';
+import { UserFavoriteActivity } from '../interfaces/UserFavoriteActivity.ts';
 
 export const activityService = {
   async getAllActivities(): Promise<RelaxationActivity[]> {

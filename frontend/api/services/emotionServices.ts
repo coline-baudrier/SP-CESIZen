@@ -1,7 +1,7 @@
-import api from '../index';
-import { ENDPOINTS } from '../endpoints';
-import { Emotion } from '../interfaces/Emotion';
-import { EmotionTracker } from '../interfaces/EmotionTracker';
+import api from '../index.ts';
+import { ENDPOINTS } from '../endpoints.ts';
+import { Emotion } from '../interfaces/Emotion.ts';
+import { EmotionTracker } from '../interfaces/EmotionTracker.ts';
 
 export const emotionService = {
   // 🟢 Gestion des émotions

@@ -1,11 +1,20 @@
-import api from '../index';
-import { ENDPOINTS } from '../endpoints';
-import { User } from '../interfaces/User';
+import api from '../index.ts';
+import { ENDPOINTS } from '../endpoints.ts';
+import type { User, UserResponse } from '../interfaces/User.ts';
 
 export const userService = {
   async authenticate(email: string, password: string): Promise<{ token: string }> {
-    return (await api.post<{ token: string }>(ENDPOINTS.USERS.AUTHENTICATE, { email, password }))
-      .data;
+    try {
+      const response = await api.post<{ token: string }>(ENDPOINTS.USERS.AUTHENTICATE, {
+        email,
+        password,
+      });
+      console.log('Token reçu :', response.data.token); // Debug
+      return response.data;
+    } catch (error) {
+      console.error("Erreur d'authentification :", error);
+      throw error;
+    }
   },
 
   async register(username: string, email: string, password: string): Promise<void> {
@@ -16,8 +25,8 @@ export const userService = {
     await api.post(ENDPOINTS.USERS.REGISTER_ADMIN, { username, email, password });
   },
 
-  async getProfile(): Promise<User> {
-    return (await api.get<User>(ENDPOINTS.USERS.PROFILE)).data;
+  async getProfile(): Promise<UserResponse> {
+    return (await api.get<UserResponse>(ENDPOINTS.USERS.PROFILE)).data;
   },
 
   async getAllUsers(): Promise<User[]> {
