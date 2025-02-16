@@ -23,7 +23,7 @@
 
       <v-divider class="my-4"></v-divider>
 
-      <v-btn variant="text" class="text-decoration-underline" :to="'/guest'">
+      <v-btn variant="text" class="text-decoration-underline" :to="'/dashboard'">
         Accéder en mode invité
       </v-btn>
     </v-card>

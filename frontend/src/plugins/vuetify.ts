@@ -7,11 +7,11 @@ import '@mdi/font/css/materialdesignicons.css';
 const myTheme = {
   dark: false,
   colors: {
-    primary: '#2C5F2D', // Vert Forêt
-    secondary: '#E1A722', // Jaune Moutarde
-    accent: '#A7C4A0', // Vert Sauge
-    background: '#F2E6D0', // Beige Naturel
-    surface: '#F0F5F9', // Blanc bleuté
+    primary: '#4CAF50', // Vert doux
+    secondary: '#FFC107', // Jaune chaleureux
+    accent: '#B2DFDB', // Vert d’eau
+    background: '#F8F9FA', // Blanc cassé
+    surface: '#FFFFFF', // Blanc pur
     error: '#E57373',
     success: '#81C784',
     warning: '#FFB74D',
