@@ -17,8 +17,9 @@ class UserNonRegressionTest extends TestCase
         $this->mockUser = new User($this->mockPDO);
         $this->authController = new AuthController($this->mockPDO);
 
-        putenv("JWT_SECRET=test_secret_key");
-        $_ENV['JWT_SECRET'] = "test_secret_key";
+        putenv("JWT_SECRET=" . ($_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET')));
+        $_ENV['JWT_SECRET'] = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET');
+
     }
 
     public function testPasswordForgotDoesNotAffectLogin()

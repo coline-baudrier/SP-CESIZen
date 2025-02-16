@@ -39,6 +39,10 @@ class EmotionTrackerNonRegressionTest extends TestCase
 
         // Générer un vrai JWT avec Firebase\JWT
         $this->mockToken = $this->generateMockToken(1);
+
+        putenv("JWT_SECRET=" . ($_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET')));
+        $_ENV['JWT_SECRET'] = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET');
+
     }
 
     private function generateMockToken($userId)

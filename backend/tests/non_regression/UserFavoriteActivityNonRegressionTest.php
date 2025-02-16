@@ -31,8 +31,9 @@ class UserFavoriteActivityNonRegressionTest extends TestCase
         $this->mockToken = JWT::encode(["sub" => 1], "test_secret_key", 'HS256'); // Vrai JWT signé
         // JWT simplifié pour le test
 
-        putenv("JWT_SECRET=test_secret_key");
-        $_ENV['JWT_SECRET'] = "test_secret_key";
+        putenv("JWT_SECRET=" . ($_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET')));
+        $_ENV['JWT_SECRET'] = $_ENV['JWT_SECRET'] ?? getenv('JWT_SECRET');
+
     }
 
     private function getFavorites()
