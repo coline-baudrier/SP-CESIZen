@@ -1,6 +1,6 @@
-import api from '../index.ts';
-import { ENDPOINTS } from '../endpoints.ts';
-import type { User, UserResponse } from '../interfaces/User.ts';
+import api from '../index';
+import { ENDPOINTS } from '../endpoints';
+import type { User, UserResponse } from '../interfaces/User';
 
 export const userService = {
   async authenticate(email: string, password: string): Promise<{ token: string }> {

@@ -1,57 +1,50 @@
-@import 'base.css';
-
-/* ==================== */
-/* 🎨 Base Mobile-First */
-/* ==================== */
-#app {
-  max-width: 100%;
+/* Gestion du layout */
+.container {
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem;
-  font-weight: normal;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 16px;
 }
 
-/* ✅ Mobile : le contenu est centré */
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh; /* S'assure que tout prend 100% de la hauteur */
+/* Header */
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px 16px;
+  text-align: center;
 }
 
-/* ======================= */
-/* 📏 Tablette (768px +)   */
-/* ======================= */
+/* Cards */
+.card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin: 8px 0;
+}
+
+/* Flexbox pour les listes d'éléments */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Responsive Design */
+/* Tablette */
 @media (min-width: 768px) {
-  #app {
-    max-width: 90%;
-    padding: 2rem;
+  .list {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
-
-  body {
-    justify-content: center; /* Au lieu de flex-start */
+  .card {
+    width: calc(50% - 16px);
   }
 }
 
-/* ======================= */
-/* 🖥 Desktop (1024px +)   */
-/* ======================= */
+/* Desktop */
 @media (min-width: 1024px) {
-  body {
-    display: flex;
-    align-items: center; /* Centre les éléments verticalement */
-    justify-content: center; /* Centre aussi horizontalement */
-    min-height: 100vh; /* S'assure que le contenu prend toute la hauteur */
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Deux colonnes */
-    align-items: center; /* Permet de garder le centrage vertical */
-    gap: 2rem; /* Espacement entre les colonnes */
-    padding: 0 3rem;
+  .card {
+    width: calc(33.333% - 16px);
   }
 }

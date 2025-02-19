@@ -5,7 +5,7 @@ require_once '../../vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-class StressDiagnosisTest
+class StressTestController
 {
     private $stressTestModel;
 
@@ -28,183 +28,179 @@ class StressDiagnosisTest
         }
     }
 
-    // Récupérer la liste des tests (Accès public)
+    // ==================== GESTION DES TESTS ====================
+
     public function getTests()
     {
-        try {
-            $tests = $this->stressTestModel->getAllTests();
-
-            if (!$tests) {
-                return ["error" => "Aucun test trouvé."];
-            }
-
-            return $tests;
-        } catch (Exception $e) {
-            return ["error" => "Erreur lors de la récupération des tests"];
-        }
+        return $this->stressTestModel->getAllTests();
     }
 
-    // Récupérer les questions d’un test spécifique (Accès public)
-    public function getTestQuestions($data)
-    {
-        try {
-            $testId = isset($data['test_id']) ? $data['test_id'] : null;
-
-            if (!$testId) {
-                return ["error" => "Test ID requis"];
-            }
-
-            $questions = $this->stressTestModel->getTestQuestions($testId);
-
-            if (!$questions) {
-                return ["error" => "Aucune question trouvée pour ce test"];
-            }
-
-            return $questions;
-        } catch (Exception $e) {
-            return ["error" => "Erreur lors de la récupération des questions"];
-        }
-    }
-
-    // Enregistrer un diagnostic (JWT requis)
-    public function submitTest($token, $data)
-    {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
-            $userId = $decoded->sub;
-
-            $testId = isset($data['test_id']) ? $data['test_id'] : null;
-            $score = isset($data['score']) ? $data['score'] : null;
-
-            if (!$testId || !$score) {
-                return ["error" => "Données incomplètes"];
-            }
-
-            return $this->stressTestModel->saveDiagnostic($userId, $testId, $score);
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
-        }
-    }
-
-    // Récupérer l'historique des diagnostics d'un utilisateur (JWT requis)
-    public function getDiagnostics($token)
-    {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
-            $userId = $decoded->sub;
-
-            $diagnostics = $this->stressTestModel->getDiagnosticsByUser($userId);
-
-            if (!$diagnostics) {
-                return ["error" => "Aucun diagnostic trouvé"];
-            }
-
-            return $diagnostics;
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
-        }
-    }
-
-    // Ajouter un test (Admin uniquement)
     public function createTest($token, $data)
     {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
 
-            if ($decoded->role !== 2) { // 2 = Admin
-                return ["error" => "Accès refusé"];
-            }
+        $name = $data['name'] ?? null;
+        $description = $data['description'] ?? null;
 
-            $name = isset($data['name']) ? $data['name'] : null;
-            $description = isset($data['description']) ? $data['description'] : null;
-
-            if (!$name || !$description) {
-                return ["error" => "Données incomplètes"];
-            }
-
-            return $this->stressTestModel->createTest($name, $description);
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+        if (!$name || !$description) {
+            return ["error" => "Données incomplètes"];
         }
+
+        return $this->stressTestModel->createTest($name, $description);
     }
 
-    // Ajouter une question à un test (Admin uniquement)
+    // ==================== GESTION DES QUESTIONS ====================
+
+    public function getTestQuestions($data)
+    {
+        $testId = $data['test_id'] ?? null;
+        if (!$testId) return ["error" => "Test ID requis"];
+
+        return $this->stressTestModel->getTestQuestions($testId);
+    }
+
     public function addQuestion($token, $data)
     {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
 
-            if ($decoded->role !== 2) {
-                return ["error" => "Accès refusé"];
-            }
+        $testId = $data['test_id'] ?? null;
+        $question = $data['question'] ?? null;
+        $value = $data['value'] ?? null;
 
-            $testId = isset($data['test_id']) ? $data['test_id'] : null;
-            $question = isset($data['question']) ? $data['question'] : null;
-            $value = isset($data['value']) ? $data['value'] : null;
-
-            if (!$testId || !$question || !$value) {
-                return ["error" => "Données incomplètes"];
-            }
-
-            return $this->stressTestModel->addQuestion($testId, $question, $value);
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+        if (!$testId || !$question || !$value) {
+            return ["error" => "Données incomplètes"];
         }
+
+        return $this->stressTestModel->addQuestion($testId, $question, $value);
     }
 
     public function updateQuestion($token, $data)
     {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
 
-            if (!isset($decoded->role) || $decoded->role !== 2) {
-                return ["error" => "Accès refusé"];
-            }
+        $questionId = $data['question_id'] ?? null;
+        $question = $data['question'] ?? null;
+        $value = $data['value'] ?? null;
 
-            $questionId = $data['question_id'] ?? null;
-            $question = $data['question'] ?? null;
-            $value = $data['value'] ?? null;
-
-            if (!$questionId || !$question || !$value) {
-                return ["error" => "Données incomplètes"];
-            }
-
-            return $this->stressTestModel->updateQuestion($questionId, $question, $value);
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+        if (!$questionId || !$question || !$value) {
+            return ["error" => "Données incomplètes"];
         }
+
+        return $this->stressTestModel->updateQuestion($questionId, $question, $value);
     }
 
     public function deleteQuestion($token, $data)
     {
-        try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
 
-            if (!isset($decoded->role) || $decoded->role !== 2) {
-                return ["error" => "Accès refusé"];
-            }
+        $questionId = $data['question_id'] ?? null;
 
-            $questionId = $data['question_id'] ?? null;
-
-            if (!$questionId) {
-                return ["error" => "Données incomplètes"];
-            }
-
-            return $this->stressTestModel->deleteQuestion($questionId);
-        } catch (Exception $e) {
-            return ["error" => "Token invalide"];
+        if (!$questionId) {
+            return ["error" => "Données incomplètes"];
         }
+
+        return $this->stressTestModel->deleteQuestion($questionId);
     }
 
-    public function getAllStressDiagnostics($token)
+    // ==================== GESTION DES DIAGNOSTICS ====================
+
+    public function submitTest($token, $data)
     {
         $auth = $this->checkAuth($token);
-        if (isset($auth->error)) {
-            return ["error" => $auth->error];
+        if (isset($auth->error)) return ["error" => $auth->error];
+
+        $userId = $auth->sub;
+        $testId = $data['test_id'] ?? null;
+        $score = $data['score'] ?? null;
+
+        if (!$testId || !$score) {
+            return ["error" => "Données incomplètes"];
         }
 
-        return $this->stressTestModel->getAllDiagnosticsByUser($auth->sub);
+        return $this->stressTestModel->saveDiagnostic($userId, $testId, $score);
     }
 
+    public function getDiagnostics($token)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
 
+        return $this->stressTestModel->getDiagnosticsByUser($auth->sub);
+    }
+
+    // ==================== GESTION DES RÉSULTATS DES TESTS ====================
+
+    public function addTestResult($token, $data)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
+
+        $testId = $data['test_id'] ?? null;
+        $minScore = $data['min_score'] ?? null;
+        $maxScore = $data['max_score'] ?? null;
+        $interpretation = $data['interpretation'] ?? null;
+
+        if (!$testId || !$minScore || !$maxScore || !$interpretation) {
+            return ["error" => "Données incomplètes"];
+        }
+
+        return $this->stressTestModel->addTestResult($testId, $minScore, $maxScore, $interpretation);
+    }
+
+    public function updateTestResult($token, $data)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
+
+        $resultId = $data['result_id'] ?? null;
+        $minScore = $data['min_score'] ?? null;
+        $maxScore = $data['max_score'] ?? null;
+        $interpretation = $data['interpretation'] ?? null;
+
+        if (!$resultId || !$minScore || !$maxScore || !$interpretation) {
+            return ["error" => "Données incomplètes"];
+        }
+
+        return $this->stressTestModel->updateTestResult($resultId, $minScore, $maxScore, $interpretation);
+    }
+
+    public function deleteTestResult($token, $data)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+        if ($auth->role !== 2) return ["error" => "Accès refusé"];
+
+        $resultId = $data['result_id'] ?? null;
+
+        if (!$resultId) {
+            return ["error" => "Données incomplètes"];
+        }
+
+        return $this->stressTestModel->deleteTestResult($resultId);
+    }
+
+    public function getScoreInterpretation($token, $data)
+    {
+        $auth = $this->checkAuth($token);
+        if (isset($auth->error)) return ["error" => $auth->error];
+
+        $testId = $data['test_id'] ?? null;
+        $score = $data['score'] ?? null;
+
+        if (!$testId || !$score) {
+            return ["error" => "Données incomplètes"];
+        }
+
+        return ["interpretation" => $this->stressTestModel->getScoreInterpretation($testId, $score)];
+    }
 }

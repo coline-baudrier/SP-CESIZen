@@ -7,15 +7,17 @@ import '@mdi/font/css/materialdesignicons.css';
 const myTheme = {
   dark: false,
   colors: {
-    primary: '#2C5F2D', // Vert Forêt
-    secondary: '#E1A722', // Jaune Moutarde
-    accent: '#A7C4A0', // Vert Sauge
-    background: '#F2E6D0', // Beige Naturel
-    surface: '#F0F5F9', // Blanc bleuté
-    error: '#E57373',
-    success: '#81C784',
-    warning: '#FFB74D',
-    info: '#64B5F6',
+    primary: '#A7C7A5', // Utilise les variables CSS
+    secondary: '#CFE1B9',
+    accent: '#F6E8B1',
+    background: '#F9F7F3',
+    surface: '#F9F7F3', // Optionnel, couleur de surface des cartes
+    title: '#495D50',
+    text: '#333533',
+    success: '#4CAF50',
+    warning: '#FFC107',
+    error: '#F44336',
+    info: '#2196F3',
   },
 };
 
@@ -23,9 +25,9 @@ export default createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'customTheme',
+    defaultTheme: 'myTheme',
     themes: {
-      customTheme: myTheme,
+      myTheme,
     },
   },
   icons: {
