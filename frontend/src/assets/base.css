@@ -1,65 +1,104 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&family=Poppins:wght@400;700&family=Montserrat:wght@400;700&family=Lora:ital@1&display=swap');
+/* Importation des polices */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@400;600&family=Ubuntu:wght@400;600&display=swap');
 
-/* Palette de couleurs */
+/* Variables CSS */
 :root {
-  --color-primary: #2c5f2d;
-  --color-secondary: #F8F9FA;
-  --color-text: #2c3e50;
-  --color-success: #4caf50;
-  --color-warning: #ff9800;
-  --color-info: #2196f3;
-  --color-background: var(--color-secondary);
+  --primary-color: #A7C7A5;  /* Vert Sauge */
+  --secondary-color: #CFE1B9; /* Vert Pastel */
+  --accent-color: #F6E8B1;    /* Jaune Pâle */
+  --background-color: #F9F7F3; /* Beige Clair */
+  --title-color: #495D50;      /* Vert Feuillage */
+  --text-color: #333533;      /* Noir Adouci */
+
+  --border-radius: 8px;
+
+  /* Polices */
+  --font-body: 'Ubuntu', sans-serif;
+  --font-headings: 'Poppins', sans-serif;
+  --font-subheadings: 'Lora', sans-serif;
 }
 
-/* Réinitialisation de base */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
+/* Réinitialisation et typographie */
+html {
+  font-size: 16px;
 }
 
+/* Police et couleurs globales */
 body {
-  font-family: 'Ubuntu', sans-serif;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: color 0.5s, background-color 0.5s;
-  min-height: 100vh;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-body);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
 }
 
-/* Gestion du scroll */
-html,
-body,
-#app {
-  height: 100%;
-  overflow: hidden;
+/* Titres en vert feuillage */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--title-color);
 }
 
-/* Typographies */
 h1, h2, h3 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: bold;
-  color: var(--color-primary);
+  font-family: var(--font-headings);
 }
 
 h4, h5, h6 {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
+  font-family: var(--font-subheadings);
 }
 
-.slogan {
-  font-family: 'Lora', serif;
+/* Suppression des marges/paddings par défaut */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Layout */
-.full-height {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Liens */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
+}
+
+/* Boutons */
+button {
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+}
+
+button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+button.secondary {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+button:hover {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+/* Cartes */
+.card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin: 8px 0;
+  border-left: 5px solid var(--primary-color);
+}
+
+/* Effet de douceur */
+.shadow-soft {
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
 }

@@ -1,6 +1,6 @@
-import api from '../index.ts';
-import { ENDPOINTS } from '../endpoints.ts';
-import { BreathingExercise } from '../interfaces/BreathingExercise.ts';
+import api from '../index';
+import { ENDPOINTS } from '../endpoints';
+import { BreathingExercise } from '../interfaces/BreathingExercise';
 
 export const breathingExerciseService = {
   async getAll(): Promise<BreathingExercise[]> {

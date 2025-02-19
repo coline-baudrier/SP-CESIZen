@@ -62,5 +62,11 @@ export const ENDPOINTS = {
     ADD_QUESTION: 'stressDiagnosis/addQuestion.php',
     UPDATE_QUESTION: 'stressDiagnosis/updateQuestion.php',
     DELETE_QUESTION: 'stressDiagnosis/deleteQuestion.php',
+    ADD_TEST_RESULT: 'stressDiagnosis/addTestResult.php',
+    UPDATE_TEST_RESULT: 'stressDiagnosis/updateTestResult.php',
+    DELETE_TEST_RESULT: 'stressDiagnosis/deleteTestResult.php',
+    GET_SCORE_INTERPRETATION: 'stressDiagnosis/getScoreInterpretation.php',
   },
 };
+
+export default ENDPOINTS;

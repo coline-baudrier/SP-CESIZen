@@ -1,7 +1,7 @@
-import api from '../index.ts';
-import { ENDPOINTS } from '../endpoints.ts';
-import { StressTest, StressTestQuestion } from '../interfaces/StressTest.ts';
-import { StressDiagnostic } from '../interfaces/StressDiagnostic.ts';
+import api from '../index';
+import { ENDPOINTS } from '../endpoints';
+import { StressTest, StressTestQuestion } from '../interfaces/StressTest';
+import { StressDiagnostic } from '../interfaces/StressDiagnostic';
 
 export const stressService = {
   async getAllTests(): Promise<StressTest[]> {
@@ -48,5 +48,54 @@ export const stressService = {
 
   async submitTest(testId: number, score: number): Promise<void> {
     await api.post(ENDPOINTS.STRESS_DIAGNOSIS.SUBMIT_TEST, { test_id: testId, score });
+  },
+
+  // 🔹 Ajouter un résultat de test
+  async addTestResult(
+    testId: number,
+    minScore: number,
+    maxScore: number,
+    interpretation: string
+  ): Promise<void> {
+    await api.post(ENDPOINTS.STRESS_DIAGNOSIS.ADD_TEST_RESULT, {
+      test_id: testId,
+      min_score: minScore,
+      max_score: maxScore,
+      interpretation: interpretation,
+    });
+  },
+
+  // 🔹 Modifier un résultat de test
+  async updateTestResult(
+    resultId: number,
+    minScore: number,
+    maxScore: number,
+    interpretation: string
+  ): Promise<void> {
+    await api.put(ENDPOINTS.STRESS_DIAGNOSIS.UPDATE_TEST_RESULT, {
+      result_id: resultId,
+      min_score: minScore,
+      max_score: maxScore,
+      interpretation: interpretation,
+    });
+  },
+
+  // 🔹 Supprimer un résultat de test
+  async deleteTestResult(resultId: number): Promise<void> {
+    await api.delete(ENDPOINTS.STRESS_DIAGNOSIS.DELETE_TEST_RESULT, {
+      data: { result_id: resultId },
+    });
+  },
+
+  // 🔹 Obtenir l’interprétation d’un score
+  async getScoreInterpretation(testId: number, score: number): Promise<string> {
+    return (
+      await api.get<{ interpretation: string }>(
+        ENDPOINTS.STRESS_DIAGNOSIS.GET_SCORE_INTERPRETATION,
+        {
+          params: { test_id: testId, score: score },
+        }
+      )
+    ).data.interpretation;
   },
 };
