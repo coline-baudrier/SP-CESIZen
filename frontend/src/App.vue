@@ -1,21 +1,9 @@
 <template>
-  <v-app>
-    <RouterView />
-  </v-app>
+  <ion-app>
+    <ion-router-outlet />
+  </ion-app>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
-
-onMounted(() => {
-  document.body.style.overflow = 'hidden';
-});
-
-onUnmounted(() => {
-  document.body.style.overflow = 'auto';
-});
+import { IonApp, IonRouterOutlet } from '@ionic/vue';
 </script>
-
-<style scoped>
-/* Plus de styles globaux ici, tout est dans `base.css` et `main.css` */
-</style>
