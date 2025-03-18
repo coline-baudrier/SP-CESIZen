@@ -1,6 +1,6 @@
 # 🌿 SP-CESIZen – Gestion du Stress et Santé Mentale
 
-> **SP-CESIZen** est une application PWA conçue pour aider à la gestion du stress et au suivi des émotions. Développée en **Vue.js + TypeScript** pour le frontend et **PHP + MySQL** pour le backend.
+> **CESIZen** est une application conçue pour téléphone et pour navigateur. Elle permet de suivre ses émotions et gérer son stress. Elle est développée en **PHP et MySQL** pour le backend, **Vue.js(Ionic) + TypeScript** pour le frontend.
 
 ---
 
@@ -16,30 +16,50 @@
 ---
 
 ## 💂️ Installation & Setup
-### 🔄 1. Cloner le projet
+### Prérequis
+- Node.js 18+
+- PHP 8.1+
+- MySQL 8+
+- Android Studio (pour build Android)
+### 1. Cloner le projet
 ```bash
 git clone https://github.com/coline-baudrier/SP-CESIZen.git
 cd SP-CESIZen
 ```
-
-### 🚀 2. Backend (PHP + MySQL)
+### 2. Backend (PHP + MySQL)
 ```bash
 cd backend
 composer install
 cp config/.env.example config/.env  # Configurer la BDD et la secret key
 php -S localhost:8000 -t api
 ```
-📐 **L'API sera disponible sur** `http://localhost:8000`
+**L'API sera disponible sur** `http://localhost:8000`
 
 ---
 
-### 🎨 3. Frontend (Vue.js + TypeScript)
+### 3. Frontend (Vue.js + TypeScript)
 ```bash
 cd frontend
-npm install
-npm run dev
+ionic build
+ionic serve
 ```
-📐 **L'application sera disponible sur** `http://localhost:5173`
+
+Pour lancer l'application directement sur téléphone :
+```bash
+# Initialiser Android (une seule fois)
+ionic capacitor add android
+
+# Après chaque modification
+ionic build
+ionic capacitor sync android 
+
+# Lancer sur l'appareil connecté
+ionic capacitor run android
+```
+- Soit lancer sur un téléphone android branché
+- Soit lancer sur un émulateur 
+
+📐 **L'application sera disponible sur** `http://localhost:8100`
 
 ---
 
@@ -81,25 +101,6 @@ npm run test
 **Convention des branches :**
 - `feature/nom-fonctionnalité` (Ajout de nouvelle fonctionnalité)
 - `fix/nom-bug` (Correction de bug)
-- `hotfix/nom-patch` (Correction urgente en production)
-
-✅ **CI/CD avec GitHub Actions :**
-- **Lint & Tests** à chaque push
-- **Déploiement automatique** (en production)
-
----
-
-## 💪 TODO & Améliorations
-- [ ] Ajouter la gestion des notifications 📩
-- [ ] Améliorer l’UI avec des animations ⚡
-- [ ] Ajouter un mode sombre 🌙
-
-📌 **Propose tes idées en créant une issue !** 🛠️
-
----
-
-## 📄 Licence
-Ce projet est sous licence **MIT**.
 
 ---
 
