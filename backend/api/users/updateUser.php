@@ -1,12 +1,7 @@
 <?php
-
 require_once '../../database.php';
 require_once '../controllers/UserController.php';
-
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: PATCH, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+require_once '../cors-header.php';
 
 try {
     $headers = getallheaders();
