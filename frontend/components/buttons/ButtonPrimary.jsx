@@ -16,17 +16,17 @@ export default ButtonPrimary;
 
 const styles = StyleSheet.create({
   btn: {
-    backgroundColor: colors.lagoon,
+    backgroundColor: colors.primary,
     width: "45%",
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 10,
     borderRadius: 10,
-    elevation: 15,
+    elevation: 5,
     alignSelf: "center",
   },
   textBtn: {
-    color: colors.sky,
+    color: colors.textOnPrimary,
     textAlign: "center",
     fontSize: 18,
     fontFamily: "Ubuntu_500Medium",

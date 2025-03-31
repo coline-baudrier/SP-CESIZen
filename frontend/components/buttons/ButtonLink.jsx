@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textBtn: {
-    color: colors.stone,
+    color: colors.primaryDark,
     textAlign: "center",
     fontSize: 14,
     fontFamily: "Ubuntu_400Medium",

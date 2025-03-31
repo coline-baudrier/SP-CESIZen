@@ -46,7 +46,6 @@ import {
   Poppins_900Black,
   Poppins_900Black_Italic,
 } from "@expo-google-fonts/poppins";
-import { Button } from "react-native";
 
 // Garder le splash screen affiché tant qu'on charge les ressources
 SplashScreen.preventAutoHideAsync();
@@ -102,13 +101,13 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: colors.stone,
+            backgroundColor: colors.surface,
           },
-          headerTintColor: colors.frost,
+          headerTintColor: colors.textPrimary,
           headerTitleAlign: "center",
         }}
       >
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Connexion" component={Login} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Create Account" component={CreateAccount} />
       </Stack.Navigator>
