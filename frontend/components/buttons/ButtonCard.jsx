@@ -13,7 +13,7 @@ const ButtonCard = ({ title, image, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    height: 150,
+    height: 170,
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: colors.secondaryLight,

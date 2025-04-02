@@ -17,10 +17,10 @@ export default ButtonPrimary;
 const styles = StyleSheet.create({
   btn: {
     backgroundColor: colors.primary,
-    width: "45%",
+    width: "65%",
     paddingHorizontal: 15,
     paddingVertical: 10,
-    marginBottom: 10,
+    marginVertical: 10,
     borderRadius: 10,
     elevation: 5,
     alignSelf: "center",

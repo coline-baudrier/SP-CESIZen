@@ -3,6 +3,8 @@ import React from "react";
 import colors from "../constants/colors";
 import ButtonCard from "../components/buttons/ButtonCard";
 import Divider from "../components/utils/Divider";
+import ButtonPrimary from "../components/buttons/ButtonPrimary";
+import CardFeelings from "../components/cards/CardFeelings";
 
 const Home = ({ navigation }) => {
   return (
@@ -43,6 +45,18 @@ const Home = ({ navigation }) => {
           }}
         />
       </View>
+      <Divider
+        color={colors.secondaryDark}
+        thickness={2}
+        marginVertical={1}
+      ></Divider>
+      <ButtonPrimary
+        btnTitle="Enregistrer mon humeur du jour"
+        onPress={() => {
+          console.log("Navigation Enregistrer une nouvelle émotion");
+        }}
+      ></ButtonPrimary>
+      <CardFeelings titleCard="Titre" dateCard="Hier"></CardFeelings>
       <Divider
         color={colors.secondaryDark}
         thickness={2}
