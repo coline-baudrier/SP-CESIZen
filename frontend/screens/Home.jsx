@@ -56,7 +56,9 @@ const Home = ({ navigation }) => {
           console.log("Navigation Enregistrer une nouvelle émotion");
         }}
       ></ButtonPrimary>
-      <CardFeelings titleCard="Titre" dateCard="Hier"></CardFeelings>
+      <CardFeelings titleCard="Titre" dateCard="Hier" noteCard=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dignissim ex libero, non pretium lorem sollicitudin vitae. Fusce et convallis ipsum. Duis in justo dictum, porta mi at, sagittis ante. Proin dapibus dapibus ultricies. Duis vitae mauris sed lectus volutpat ornare sed non sapien. Sed a libero magna."></CardFeelings>
+      <CardFeelings titleCard="Titre" dateCard="Hier" noteCard=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dignissim ex libero, non pretium lorem sollicitudin vitae. Fusce et convallis ipsum. Duis in justo dictum, porta mi at, sagittis ante. Proin dapibus dapibus ultricies. Duis vitae mauris sed lectus volutpat ornare sed non sapien. Sed a libero magna."></CardFeelings>
+      <CardFeelings titleCard="Titre" dateCard="Hier" noteCard=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dignissim ex libero, non pretium lorem sollicitudin vitae. Fusce et convallis ipsum. Duis in justo dictum, porta mi at, sagittis ante. Proin dapibus dapibus ultricies. Duis vitae mauris sed lectus volutpat ornare sed non sapien. Sed a libero magna."></CardFeelings>
       <Divider
         color={colors.secondaryDark}
         thickness={2}
