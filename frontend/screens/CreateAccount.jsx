@@ -4,6 +4,7 @@ import colors from "../constants/colors";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import ButtonLink from "../components/buttons/ButtonLink";
 import ButtonSecondary from "../components/buttons/ButtonSecondary";
+import BigTitle from "../components/texts/BigTitle";
 
 const CreateAccount = ({ navigation }) => {
   return (
@@ -12,9 +13,8 @@ const CreateAccount = ({ navigation }) => {
         style={styles.logo}
         source={require("../assets/logo-cesizen.png")}
       />
-      // TODO : Logique de création de compte
       <View style={styles.inputContainer}>
-        <Text style={styles.text}>Inscrivez-vous</Text>
+        <BigTitle title="Inscrivez-vous"></BigTitle>
         <TextInput
           style={styles.input}
           placeholder="Nom d'utilisateur"

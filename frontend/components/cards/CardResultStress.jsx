@@ -18,7 +18,6 @@ const CardResultStress = ({ score, testName, date, description }) => {
   );
 };
 
-// TODO : Mettre les couleurs du thème
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: "white",

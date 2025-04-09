@@ -49,7 +49,7 @@ php -S localhost:8000 -t api
 
 Les scripts SQL sont trouvables dans `backend/sql/createDatabase.sql` et `backend/sql/insertInDatabase.sql`
 
-**L'API sera disponible sur** `http://localhost:8000`
+**L'API sera disponible sur** `http://51.178.183.31/cesizen/api/`
 
 ---
 

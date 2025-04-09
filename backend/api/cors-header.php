@@ -1,8 +1,14 @@
 <?php
-
 // Autorisation de l'origine des requêtes
-$allowedOrigin = 'http://localhost:5173';
-header("Access-Control-Allow-Origin: $allowedOrigin");
+$allowedOrigins = [
+    'exp://192.168.1.172:8081',
+    'http://192.168.1.172:8081' // Ajoutez aussi l'URL HTTP si nécessaire
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+}
 
 // Autorisation des méthodes HTTP
 header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
@@ -21,4 +27,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-
