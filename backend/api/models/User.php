@@ -111,13 +111,18 @@ class User
         try {
             $sql = "SELECT * FROM " . $this->table . " WHERE email = :email LIMIT 1";
             $query = $this->pdo->prepare($sql);
-            $query->execute([':email' => $email]);
-            return $query->fetch(PDO::FETCH_ASSOC) ?: null;
+            $query->bindParam(':email', $email, PDO::PARAM_STR);
+            $query->execute();
+
+            $user = $query->fetch(PDO::FETCH_ASSOC);
+            return $user ?: null;
+
         } catch (PDOException $e) {
-            error_log("Erreur SQL: " . $e->getMessage());
+            error_log("Erreur SQL dans getUserByEmail: " . $e->getMessage());
             return null;
         }
     }
+
 
     public function getUserByUsername($username)
     {

@@ -1,11 +1,7 @@
 <?php
 require_once '../../database.php';
 require_once '../controllers/AuthController.php';
-
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
+require_once '../cors-header.php';
 
 try {
     $db = Database::getConnection();

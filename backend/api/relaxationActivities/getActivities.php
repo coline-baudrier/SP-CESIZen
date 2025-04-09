@@ -1,10 +1,7 @@
 <?php
 require_once '../../database.php';
 require_once '../controllers/RelaxationActivityController.php';
-
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
+require_once '../cors-header.php';
 
 try {
     $db = Database::getConnection();

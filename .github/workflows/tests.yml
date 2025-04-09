@@ -11,7 +11,9 @@ jobs:
   unit-tests:
     name: Run Unit Tests
     runs-on: ubuntu-latest
-    if: github.base_ref == 'dev' || github.base_ref == 'test'  # UNIQUEMENT sur PR vers dev et test
+    if: github.base_ref == 'dev' || github.base_ref == 'test'
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}  # Charge la clé JWT depuis GitHub Secrets
     steps:
       - uses: actions/checkout@v3
 
@@ -30,11 +32,12 @@ jobs:
           cd backend
           vendor/bin/phpunit --testsuite UnitTests
 
-
   functional-tests:
     name: Run Functional Tests
     runs-on: ubuntu-latest
-    if: github.base_ref == 'test' || github.base_ref == 'production'  # UNIQUEMENT sur PR vers test et production
+    if: github.base_ref == 'test' || github.base_ref == 'production'
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - uses: actions/checkout@v3
 
@@ -51,12 +54,14 @@ jobs:
       - name: Run PHPUnit Functional Tests
         run: |
           cd backend
-          vendor/bin/phpunit --testsuite FunctionalTests -
+          vendor/bin/phpunit --testsuite FunctionalTests
 
   non-regression-tests:
     name: Run Non-Regression Tests
     runs-on: ubuntu-latest
-    if: github.base_ref == 'test' || github.base_ref == 'production'  # UNIQUEMENT sur PR vers test et production
+    if: github.base_ref == 'test' || github.base_ref == 'production'
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - uses: actions/checkout@v3
 
