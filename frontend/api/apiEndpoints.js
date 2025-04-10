@@ -5,4 +5,7 @@ export default {
     REGISTER: `${API_BASE}/users/createUser`,
     LOGIN: `${API_BASE}/users/authUser`,
   },
+  BREATHING_EXERCISE: {
+    GET_ALL: `${API_BASE}/breathingExercise/getExercises`,
+  },
 };

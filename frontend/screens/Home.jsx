@@ -28,6 +28,7 @@ const Home = ({ navigation }) => {
             image={require("../assets/backgrounds/humeur.jpg")}
             onPress={() => {
               console.log("Appui sur Respiration");
+              navigation.navigate("Breathing Exercises");
             }}
           />
         </View>
