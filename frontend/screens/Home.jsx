@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
 import colors from "../constants/colors";
 import ButtonCard from "../components/buttons/ButtonCard";
@@ -96,7 +96,6 @@ const Home = ({ navigation }) => {
                 console.log("Navigation Voir la liste de toutes les activités");
               }}
             ></ButtonSecondary>
-            fitre déjà appliqué sur les favoris = 1
             <ButtonSecondary
               btnTitle="Voir mes activités favorites"
               onPress={() => {
@@ -112,7 +111,7 @@ const Home = ({ navigation }) => {
         ></Divider>
         <BigTitle title="Exercices de respiration"></BigTitle>
         <View style={styles.cardsContainer}>
-          <BreathingExercises></BreathingExercises>
+          <BreathingExercises scrollEnabled={false}></BreathingExercises>
         </View>
         <Divider
           color={colors.secondaryDark}

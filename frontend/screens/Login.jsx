@@ -42,10 +42,7 @@ const Login = ({ navigation }) => {
             navigation.navigate("Create Account");
           }}
         />
-        <ButtonLink
-          btnTitle="Se connecter en invité"
-          //onPress={onPressConnect}
-        />
+        <ButtonLink btnTitle="Se connecter en invité" />
       </View>
     </View>
   );

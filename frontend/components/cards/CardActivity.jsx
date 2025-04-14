@@ -18,11 +18,7 @@ const CardActivity = ({ title, description, image }) => {
           //onPress={handleFavoritePress}
           style={styles.iconContainer}
         >
-          <Icon
-            //name={isFavorite ? "favorite" : "favorite-border"}
-            size={24}
-            //color={isFavorite ? "red" : "#333"}
-          />
+          <Icon size={24} />
         </TouchableOpacity>
       </View>
     </View>

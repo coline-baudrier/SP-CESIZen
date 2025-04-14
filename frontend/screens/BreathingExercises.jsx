@@ -12,7 +12,7 @@ import breathingExerciseService from "../api/services/breathingExercise.js";
 import MiniTitle from "../components/texts/MiniTitle.jsx";
 import colors from "../constants/colors.js";
 
-const BreathingExercises = () => {
+const BreathingExercises = ({ scrollEnabled = true }) => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,6 +51,7 @@ const BreathingExercises = () => {
   return (
     <View style={styles.container}>
       <FlatList
+        scrollEnabled={scrollEnabled}
         data={exercises}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
@@ -77,14 +78,10 @@ const BreathingExercises = () => {
                 <Text style={styles.durationText}>{item.inhale_duration}s</Text>
               </View>
 
-              <View style={styles.durationSeparator}>|</View>
-
               <View style={styles.durationItem}>
                 <MaterialIcons name="pause" size={16} color={colors.warning} />
                 <Text style={styles.durationText}>{item.hold_duration}s</Text>
               </View>
-
-              <View style={styles.durationSeparator}>|</View>
 
               <View style={styles.durationItem}>
                 <MaterialIcons
