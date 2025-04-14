@@ -1,4 +1,5 @@
 import React from "react";
+import colors from "../../constants/colors";
 import { View, Text, StyleSheet } from "react-native";
 
 const CardResultStress = ({ score, testName, date, description }) => {
@@ -20,20 +21,17 @@ const CardResultStress = ({ score, testName, date, description }) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: "white",
-    borderRadius: 10,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     padding: 16,
-    margin: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
+    marginVertical: 8,
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   scoreText: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#e74c3c",
+    color: colors.error,
     marginBottom: 8,
   },
   metaContainer: {
@@ -44,15 +42,15 @@ const styles = StyleSheet.create({
   testNameText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2c3e50",
+    color: colors.textPrimary,
   },
   dateText: {
     fontSize: 14,
-    color: "#7f8c8d",
+    color: colors.textPrimary,
   },
   descriptionText: {
     fontSize: 14,
-    color: "#34495e",
+    color: colors.textSecondary,
     lineHeight: 20,
   },
 });
