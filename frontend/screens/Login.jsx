@@ -13,7 +13,6 @@ const Login = ({ navigation }) => {
         style={styles.logo}
         source={require("../assets/logo-cesizen.png")}
       />
-      <Text style={styles.text}>Connectez-vous</Text>
       <View style={styles.inputContainer}>
         <BigTitle title="Connectez-vous"></BigTitle>
         <TextInput
