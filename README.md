@@ -1,6 +1,6 @@
 # SP-CESIZen – Gestion du Stress et Santé Mentale
 
-> **CESIZen** est une application conçue pour téléphone et pour navigateur. Elle permet de suivre ses émotions et gérer son stress. Elle est développée en **PHP et MySQL** pour le backend, **React Native** pour le frontend.
+> **CESIZen** est une application conçue pour téléphone. Elle permet de suivre ses émotions et gérer son stress. Elle est développée en **PHP et MySQL** pour le backend, **React Native** pour le frontend.
 
 ---
 

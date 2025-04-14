@@ -9,6 +9,7 @@ import CardFeelings from "../components/cards/CardFeelings";
 import CardActivity from "../components/cards/CardActivity";
 import CardResultStress from "../components/cards/CardResultStress";
 import BigTitle from "../components/texts/BigTitle";
+import BreathingExercises from "./BreathingExercises";
 
 const Home = ({ navigation }) => {
   return (
@@ -28,6 +29,7 @@ const Home = ({ navigation }) => {
             image={require("../assets/backgrounds/humeur.jpg")}
             onPress={() => {
               console.log("Appui sur Respiration");
+              navigation.navigate("Breathing Exercises");
             }}
           />
         </View>
@@ -81,7 +83,7 @@ const Home = ({ navigation }) => {
         ></Divider>
         <View>
           <BigTitle title="Activités de relaxation"></BigTitle>
-          enregistrées
+
           <CardActivity
             title="Allez dehors"
             description="blablabla"
@@ -110,36 +112,8 @@ const Home = ({ navigation }) => {
         ></Divider>
         <BigTitle title="Exercices de respiration"></BigTitle>
         <View style={styles.cardsContainer}>
-          <ButtonCard
-            title="Activité"
-            image={require("../assets/backgrounds/humeur.jpg")}
-            onPress={() => {
-              console.log("Appui sur Activité");
-            }}
-          />
-          <ButtonCard
-            title="Stress"
-            image={require("../assets/backgrounds/humeur.jpg")}
-            onPress={() => {
-              console.log("Appui sur Stress");
-            }}
-          />
+          <BreathingExercises></BreathingExercises>
         </View>
-        <View style={styles.cardsContainer}>
-          <ButtonCard
-            title="Activité"
-            image={require("../assets/backgrounds/humeur.jpg")}
-            onPress={() => {
-              console.log("Appui sur Activité");
-            }}
-          />
-        </View>
-        <ButtonSecondary
-          btnTitle="Ajouter un exercice personnalisé"
-          onPress={() => {
-            console.log("Navigation Voir ma liste d'activités favorites");
-          }}
-        ></ButtonSecondary>
         <Divider
           color={colors.secondaryDark}
           thickness={2}
