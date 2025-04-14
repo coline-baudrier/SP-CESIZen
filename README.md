@@ -1,109 +1,118 @@
-# 🌿 SP-CESIZen – Gestion du Stress et Santé Mentale
+# SP-CESIZen – Gestion du Stress et Santé Mentale
 
-> **CESIZen** est une application conçue pour téléphone et pour navigateur. Elle permet de suivre ses émotions et gérer son stress. Elle est développée en **PHP et MySQL** pour le backend, **Vue.js(Ionic) + TypeScript** pour le frontend.
-
----
-
-## 🚀 Fonctionnalités Principales
-✅ **Authentification sécurisée** (JWT)  
-✅ **Tracker d'émotions** pour suivre son bien-être  
-✅ **Exercices de respiration** interactifs  
-✅ **Tests de stress** pour mieux comprendre son état mental  
-✅ **PWA : Installation sur mobile & offline**  
-✅ **API RESTful pour interagir avec la base de données**  
-✅ **Gestion des favoris et historique personnel**
+> **CESIZen** est une application conçue pour téléphone et pour navigateur. Elle permet de suivre ses émotions et gérer son stress. Elle est développée en **PHP et MySQL** pour le backend, **React Native** pour le frontend.
 
 ---
 
-## 💂️ Installation & Setup
+## Fonctionnalités Principales
+
+- [ ] Authentification en utilisateur ou en administrateur
+- [ ] Utilisation en tant qu'invité
+- [ ] Tracker d'émotions journalier
+- [ ] Visualisation d'activités de relaxation (favoris sauvegardés)
+- [ ] Réalisation de tests de stress (avec sauvegarde de résultats)
+- [ ] Réalisation d'exercices de respiration
+- [ ] Création de nouveaux exercices de respiration
+- [ ] Gestion en administrateur :
+  - [ ] Gestion des tests de stress
+  - [ ] Gestion des exercices de respiration
+  - [ ] Gestion des activités de relaxation
+  - [ ] Gestion des utilisateurs (supprimer un compte, création administrateur)
+
+---
+
+## Installation & Setup
+
 ### Prérequis
+
 - Node.js 18+
-- PHP 8.1+
+- PHP 8.3+
 - MySQL 8+
-- Android Studio (pour build Android)
+- Expo CLI
+- Android Studio (pour émuler une application mobile)
+
 ### 1. Cloner le projet
+
 ```bash
 git clone https://github.com/coline-baudrier/SP-CESIZen.git
 cd SP-CESIZen
 ```
+
 ### 2. Backend (PHP + MySQL)
+
 ```bash
 cd backend
 composer install
-cp config/.env.example config/.env  # Configurer la BDD et la secret key
+cp .env.example .env  # Configurer la BDD et la secret key
 php -S localhost:8000 -t api
 ```
-**L'API sera disponible sur** `http://localhost:8000`
+
+Les scripts SQL sont trouvables dans `backend/sql/createDatabase.sql` et `backend/sql/insertInDatabase.sql`
+
+**L'API sera disponible sur** `http://51.178.183.31/cesizen/api/`
 
 ---
 
-### 3. Frontend (Vue.js + TypeScript)
+### 3. Frontend (React Native avec Expo)
+
 ```bash
 cd frontend
-ionic build
-ionic serve
+npm install
+npm run android # Pour lancer sur votre émulateur
 ```
 
-Pour lancer l'application directement sur téléphone :
-```bash
-# Initialiser Android (une seule fois)
-ionic capacitor add android
-
-# Après chaque modification
-ionic build
-ionic capacitor sync android 
-
-# Lancer sur l'appareil connecté
-ionic capacitor run android
-```
-- Soit lancer sur un téléphone android branché
-- Soit lancer sur un émulateur 
-
-📐 **L'application sera disponible sur** `http://localhost:8100`
+L'application démarrera directement sur l'émulateur (ou votre téléphone).
 
 ---
 
-## 🛠️ Tests & Qualité
+## Tests & Qualité
+
 ```bash
 backend/tests/
 ├── unit/  # Tests unitaires (isolés, avec mocks)
 │   ├── UserTest.php
-│   ├── AuthTest.php
-│   ├── EmailTest.php
+│   ├── EmotionTrackerTest.php
+│   ├── UserFavoriteActivityTest.php
 ├── functional/  # Tests fonctionnels (simulent des scénarios complets)
 │   ├── AuthFunctionalTest.php
 │   ├── EmotionTrackerFunctionalTest.php
+│   ├── UserFavoriteActivityFunctionalTest.php
 ├── non_regression/  # Tests de non-régression (vérifient les anciens comportements)
 │   ├── UserNonRegressionTest.php
-│   ├── AuthNonRegressionTest.php
-│   ├── GlobalFunctionalitiesTest.php
+│   ├── UserFavoriteActivityNonRegressionTest.php
+│   ├── EmotionTrackerNonRegressionTest.php
 ```
-### ✅ Tests Backend (PHPUnit)
+
+### Tests Backend (PHPUnit)
+
 ```bash
 cd backend
 vendor/bin/phpunit --testdox --colors=always --configuration phpunit.xml
 ```
 
-### ✅ Tests Frontend (Vitest)
-```bash
-cd frontend
-npm run test
-```
+### Tests Frontend
+
+A mettre en place.
 
 ---
 
-## 🔧 Workflow Git & CI/CD
+## Workflow Git & CI/CD
+
 **Branches principales :**
+
 - `main` → **Production**
 - `dev` → **Développement**
-- `test` → **Tests avant merge**
+- `test` → **Vérification et réalisation de test avant passage en production**
 
 **Convention des branches :**
-- `feature/nom-fonctionnalité` (Ajout de nouvelle fonctionnalité)
-- `fix/nom-bug` (Correction de bug)
+
+- `frontend/nom-view` (Ajout dans la partie frontend)
+- `backend/nom-feature` (Ajout dans la partie backend)
+- `api/nom-feature` (Ajout dans l'API)
 
 ---
 
-## 💌 Contact & Contributeurs
+## Contact & Contributeurs
+
 👩‍💻 **Développé par** [@coline-baudrier](https://github.com/coline-baudrier)  
 📩 **Contact :** coline.baudrier@outlook.com

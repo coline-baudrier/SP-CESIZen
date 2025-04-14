@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, TextInput, Image } from "react-native";
+import { StyleSheet, View, TextInput, Image } from "react-native";
 import React from "react";
 import colors from "../constants/colors";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import ButtonLink from "../components/buttons/ButtonLink";
 import ButtonSecondary from "../components/buttons/ButtonSecondary";
+import BigTitle from "../components/texts/BigTitle";
 
 const Login = ({ navigation }) => {
   return (
@@ -14,6 +15,7 @@ const Login = ({ navigation }) => {
       />
       <Text style={styles.text}>Connectez-vous</Text>
       <View style={styles.inputContainer}>
+        <BigTitle title="Connectez-vous"></BigTitle>
         <TextInput
           style={styles.input}
           placeholder="Adresse mail"

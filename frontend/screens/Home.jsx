@@ -8,12 +8,13 @@ import ButtonSecondary from "../components/buttons/ButtonSecondary";
 import CardFeelings from "../components/cards/CardFeelings";
 import CardActivity from "../components/cards/CardActivity";
 import CardResultStress from "../components/cards/CardResultStress";
+import BigTitle from "../components/texts/BigTitle";
 
 const Home = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Text style={styles.title}>Bienvenue, Lord_Zara</Text>
+        <BigTitle title="Bienvenue, Lord_Zara"></BigTitle>
         <View style={styles.cardsContainer}>
           <ButtonCard
             title="Humeur"
@@ -38,7 +39,6 @@ const Home = ({ navigation }) => {
               console.log("Appui sur Activité");
             }}
           />
-          stress + les résultats
           <ButtonCard
             title="Stress"
             image={require("../assets/backgrounds/humeur.jpg")}
@@ -52,8 +52,7 @@ const Home = ({ navigation }) => {
           thickness={2}
           marginVertical={1}
         ></Divider>
-        <Text style={styles.title}>Mes émotions</Text>
-        ouvre la pop-up qui contient le détail
+        <BigTitle title="Mes émotions"></BigTitle>
         <CardFeelings
           titleCard="Titre"
           dateCard="Hier"
@@ -81,7 +80,7 @@ const Home = ({ navigation }) => {
           marginVertical={10}
         ></Divider>
         <View>
-          <Text style={styles.title}>Les activités</Text>
+          <BigTitle title="Activités de relaxation"></BigTitle>
           enregistrées
           <CardActivity
             title="Allez dehors"
@@ -109,7 +108,7 @@ const Home = ({ navigation }) => {
           thickness={2}
           marginVertical={10}
         ></Divider>
-        <Text style={styles.title}>Exercices de respiration</Text>
+        <BigTitle title="Exercices de respiration"></BigTitle>
         <View style={styles.cardsContainer}>
           <ButtonCard
             title="Activité"
@@ -135,13 +134,19 @@ const Home = ({ navigation }) => {
             }}
           />
         </View>
+        <ButtonSecondary
+          btnTitle="Ajouter un exercice personnalisé"
+          onPress={() => {
+            console.log("Navigation Voir ma liste d'activités favorites");
+          }}
+        ></ButtonSecondary>
         <Divider
           color={colors.secondaryDark}
           thickness={2}
           marginVertical={1}
         ></Divider>
         <View>
-          <Text style={styles.title}>Diagnostics de stress</Text>
+          <BigTitle title="Diagnostics de stress"></BigTitle>
           <CardResultStress
             score="75%"
             testName="Test de stress professionnel"
