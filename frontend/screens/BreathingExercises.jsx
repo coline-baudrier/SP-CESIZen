@@ -5,8 +5,12 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
-import breathingExerciseService from "../api/services/breathingExercise";
+import { MaterialIcons } from "@expo/vector-icons";
+import breathingExerciseService from "../api/services/breathingExercise.js";
+import MiniTitle from "../components/texts/MiniTitle.jsx";
+import colors from "../constants/colors.js";
 
 const BreathingExercises = () => {
   const [exercises, setExercises] = useState([]);
@@ -46,17 +50,51 @@ const BreathingExercises = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Exercices de respiration</Text>
-
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.exerciseCard}>
-            <Text style={styles.exerciseName}>{item.name}</Text>
-            <Text>Inspirez : {item.inhale_duration} secondes</Text>
-            <Text>Retenez : {item.hold_duration} secondes</Text>
-            <Text>Expirez : {item.exhale_duration} secondes</Text>
+            <View style={styles.headerContainer}>
+              <MiniTitle title={item.name} />
+              <TouchableOpacity style={styles.startButton}>
+                <Text style={styles.startButtonText}>Lancer</Text>
+                <MaterialIcons
+                  name="play-arrow"
+                  size={18}
+                  color={colors.textOnPrimary}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.durationsRow}>
+              <View style={styles.durationItem}>
+                <MaterialIcons
+                  name="arrow-upward"
+                  size={16}
+                  color={colors.success}
+                />
+                <Text style={styles.durationText}>{item.inhale_duration}s</Text>
+              </View>
+
+              <View style={styles.durationSeparator}>|</View>
+
+              <View style={styles.durationItem}>
+                <MaterialIcons name="pause" size={16} color={colors.warning} />
+                <Text style={styles.durationText}>{item.hold_duration}s</Text>
+              </View>
+
+              <View style={styles.durationSeparator}>|</View>
+
+              <View style={styles.durationItem}>
+                <MaterialIcons
+                  name="arrow-downward"
+                  size={16}
+                  color={colors.danger}
+                />
+                <Text style={styles.durationText}>{item.exhale_duration}s</Text>
+              </View>
+            </View>
           </View>
         )}
       />
@@ -64,13 +102,10 @@ const BreathingExercises = () => {
   );
 };
 
-export default BreathingExercises;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
+    padding: 8,
   },
   center: {
     flex: 1,
@@ -78,30 +113,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   error: {
-    color: "red",
+    color: colors.danger,
     fontSize: 16,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
   exerciseCard: {
-    padding: 15,
-    marginBottom: 10,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e9ecef",
+    padding: 16,
+    marginBottom: 12,
+    backgroundColor: colors.backgroundAlt,
+    borderRadius: 10,
   },
-  exerciseName: {
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  durationsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  durationItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  durationText: {
+    marginLeft: 4,
     fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 5,
+    color: colors.text,
   },
-  exerciseDescription: {
-    color: "#6c757d",
-    marginBottom: 5,
+  durationSeparator: {
+    color: colors.lightGray,
+    marginHorizontal: 4,
+  },
+  startButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.secondary,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  startButtonText: {
+    color: colors.textOnPrimary,
+    marginRight: 4,
+    fontSize: 14,
+    fontWeight: "500",
   },
 });
+
+export default BreathingExercises;
