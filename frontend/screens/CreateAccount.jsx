@@ -12,7 +12,6 @@ const CreateAccount = ({ navigation }) => {
         style={styles.logo}
         source={require("../assets/logo-cesizen.png")}
       />
-      // TODO : Logique de création de compte
       <View style={styles.inputContainer}>
         <Text style={styles.text}>Inscrivez-vous</Text>
         <TextInput

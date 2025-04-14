@@ -10,13 +10,11 @@ import CardActivity from "../components/cards/CardActivity";
 import CardResultStress from "../components/cards/CardResultStress";
 
 const Home = ({ navigation }) => {
-  // TODO : Séparer les parties dans différentes view
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Text style={styles.title}>Bienvenue, Lord_Zara</Text>
         <View style={styles.cardsContainer}>
-          // TODO : Renvoie vers la page des émotions
           <ButtonCard
             title="Humeur"
             image={require("../assets/backgrounds/humeur.jpg")}
@@ -24,7 +22,6 @@ const Home = ({ navigation }) => {
               console.log("Appui sur Humeur");
             }}
           />
-          // TODO : Renvoie vers la partie des exercices de respiration
           <ButtonCard
             title="Respiration"
             image={require("../assets/backgrounds/humeur.jpg")}
@@ -34,7 +31,6 @@ const Home = ({ navigation }) => {
           />
         </View>
         <View style={styles.cardsContainer}>
-          // TODO : Renvoie vers la page qui contient toutes les activités
           <ButtonCard
             title="Activité"
             image={require("../assets/backgrounds/humeur.jpg")}
@@ -42,7 +38,6 @@ const Home = ({ navigation }) => {
               console.log("Appui sur Activité");
             }}
           />
-          // TODO : Renvoie vers la page qui contient les différents tests de
           stress + les résultats
           <ButtonCard
             title="Stress"
@@ -58,7 +53,6 @@ const Home = ({ navigation }) => {
           marginVertical={1}
         ></Divider>
         <Text style={styles.title}>Mes émotions</Text>
-        // TODO : Affichage des cinq derniers enregistrements // TODO : Au clic,
         ouvre la pop-up qui contient le détail
         <CardFeelings
           titleCard="Titre"
@@ -88,7 +82,6 @@ const Home = ({ navigation }) => {
         ></Divider>
         <View>
           <Text style={styles.title}>Les activités</Text>
-          // TODO : Affichage d'une carte aléatoire parmis toutes celles
           enregistrées
           <CardActivity
             title="Allez dehors"
@@ -96,14 +89,12 @@ const Home = ({ navigation }) => {
             image={require("../assets/backgrounds/humeur.jpg")}
           ></CardActivity>
           <View>
-            // TODO : Renvoie vers la page qui contient toutes les activités
             <ButtonSecondary
               btnTitle="Voir toutes les activités"
               onPress={() => {
                 console.log("Navigation Voir la liste de toutes les activités");
               }}
             ></ButtonSecondary>
-            // TODO : Renvoie vers la page qui contient les activités avec un
             fitre déjà appliqué sur les favoris = 1
             <ButtonSecondary
               btnTitle="Voir mes activités favorites"
@@ -120,7 +111,6 @@ const Home = ({ navigation }) => {
         ></Divider>
         <Text style={styles.title}>Exercices de respiration</Text>
         <View style={styles.cardsContainer}>
-          // TODO : Affichage des exercices de respiration
           <ButtonCard
             title="Activité"
             image={require("../assets/backgrounds/humeur.jpg")}
@@ -145,13 +135,6 @@ const Home = ({ navigation }) => {
             }}
           />
         </View>
-        // TODO : Décider si on garde ça ou pas
-        <ButtonSecondary
-          btnTitle="Ajouter un exercice personnalisé"
-          onPress={() => {
-            console.log("Navigation Voir ma liste d'activités favorites");
-          }}
-        ></ButtonSecondary>
         <Divider
           color={colors.secondaryDark}
           thickness={2}

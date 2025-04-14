@@ -26,7 +26,6 @@ const Login = ({ navigation }) => {
           secureTextEntry={true}
         />
       </View>
-      // TODO : Logique de connexion
       <View style={styles.buttonContainer}>
         <ButtonPrimary
           btnTitle="Se connecter"
@@ -42,7 +41,6 @@ const Login = ({ navigation }) => {
             navigation.navigate("Create Account");
           }}
         />
-        // TODO : Logique de connexion en tant qu'invité
         <ButtonLink
           btnTitle="Se connecter en invité"
           //onPress={onPressConnect}
