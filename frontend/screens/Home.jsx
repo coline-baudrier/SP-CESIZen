@@ -95,6 +95,7 @@ const Home = ({ navigation }) => {
                   console.log(
                     "Navigation Voir la liste de toutes les activités"
                   );
+                  navigation.navigate("List Activities");
                 }}
               />
             </View>

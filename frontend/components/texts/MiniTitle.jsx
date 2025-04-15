@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import colors from "../../constants/colors";
 import React from "react";
 
-const BigTitle = ({ title }) => {
+const MiniTitle = ({ title }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -10,7 +10,7 @@ const BigTitle = ({ title }) => {
   );
 };
 
-export default BigTitle;
+export default MiniTitle;
 
 const styles = StyleSheet.create({
   container: {

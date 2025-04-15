@@ -2,6 +2,7 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import CreateAccount from "./screens/CreateAccount";
 import BreathingExercises from "./screens/BreathingExercises";
+import ListActivities from "./screens/ListActivities";
 import colors from "./constants/colors";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
@@ -115,6 +116,7 @@ export default function App() {
           name="Breathing Exercises"
           component={BreathingExercises}
         />
+        <Stack.Screen name="List Activities" component={ListActivities} />
       </Stack.Navigator>
     </NavigationContainer>
   );

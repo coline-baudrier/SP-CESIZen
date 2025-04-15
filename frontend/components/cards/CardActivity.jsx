@@ -4,13 +4,15 @@ import relaxationActivityService from "../../api/services/relaxationActivity";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
 
-const CardActivity = ({ image }) => {
+const CardActivity = ({
+  image,
+  activity,
+  onRefresh,
+  showRefreshButton = true,
+}) => {
   const [randomActivity, setRandomActivity] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  {
-    /* Récupération d'une activité aléatoire */
-  }
   const fetchRandomActivity = async () => {
     try {
       setLoading(true);
@@ -45,8 +47,13 @@ const CardActivity = ({ image }) => {
   };
 
   useEffect(() => {
-    fetchRandomActivity();
-  }, []);
+    if (activity) {
+      setRandomActivity(activity);
+      setLoading(false);
+    } else {
+      fetchRandomActivity();
+    }
+  }, [activity]);
 
   if (loading) {
     return (
@@ -85,12 +92,14 @@ const CardActivity = ({ image }) => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.iconContainer}
-          onPress={fetchRandomActivity} // Permet de recharger une nouvelle activité aléatoire
-        >
-          <Icon name="autorenew" size={24} color={colors.primary} />
-        </TouchableOpacity>
+        {showRefreshButton && (
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={onRefresh || fetchRandomActivity}
+          >
+            <Icon name="autorenew" size={24} color={colors.primary} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
