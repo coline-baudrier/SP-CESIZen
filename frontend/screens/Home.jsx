@@ -35,10 +35,10 @@ const Home = ({ navigation }) => {
         </View>
         <View style={styles.cardsContainer}>
           <ButtonCard
-            title="Activité"
+            title="Activités"
             image={require("../assets/backgrounds/humeur.jpg")}
             onPress={() => {
-              console.log("Appui sur Activité");
+              navigation.navigate("List Activities");
             }}
           />
           <ButtonCard
@@ -85,23 +85,25 @@ const Home = ({ navigation }) => {
           <BigTitle title="Activités de relaxation"></BigTitle>
 
           <CardActivity
-            title="Allez dehors"
-            description="blablabla"
             image={require("../assets/backgrounds/humeur.jpg")}
           ></CardActivity>
-          <View>
-            <ButtonSecondary
-              btnTitle="Voir toutes les activités"
-              onPress={() => {
-                console.log("Navigation Voir la liste de toutes les activités");
-              }}
-            ></ButtonSecondary>
-            <ButtonSecondary
-              btnTitle="Voir mes activités favorites"
-              onPress={() => {
-                console.log("Navigation Voir ma liste d'activités favorites");
-              }}
-            ></ButtonSecondary>
+          <View style={styles.buttonsRow}>
+            <View style={styles.buttonWrapper}>
+              <ButtonSecondary
+                btnTitle="Voir toutes les activités"
+                onPress={() => {
+                  navigation.navigate("List Activities");
+                }}
+              />
+            </View>
+            <View style={styles.buttonWrapper}>
+              <ButtonSecondary
+                btnTitle="Voir mes favoris"
+                onPress={() => {
+                  console.log("Navigation Voir ma liste d'activités favorites");
+                }}
+              />
+            </View>
           </View>
         </View>
         <Divider
@@ -160,6 +162,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     alignSelf: "center",
     marginTop: 10,
+  },
+  buttonsRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginHorizontal: 1,
+    marginTop: 10,
+  },
+  buttonWrapper: {
+    flex: 1,
+    marginHorizontal: 1,
   },
 });
 

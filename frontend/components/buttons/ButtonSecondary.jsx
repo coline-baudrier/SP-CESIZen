@@ -17,7 +17,7 @@ export default ButtonSecondary;
 const styles = StyleSheet.create({
   btn: {
     backgroundColor: colors.secondary,
-    width: "45%",
+    width: "75%",
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 10,
