@@ -1,12 +1,26 @@
 import { StyleSheet, View, TextInput, Image } from "react-native";
-import React from "react";
+import React, { useState, useContext } from "react";
 import colors from "../constants/colors";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import ButtonLink from "../components/buttons/ButtonLink";
 import ButtonSecondary from "../components/buttons/ButtonSecondary";
 import BigTitle from "../components/texts/BigTitle";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { login } = useContext(AuthContext);
+
+  const handleLogin = async () => {
+    setError("");
+    const result = await login(email, password);
+    if (!result.success) {
+      setError(result.error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -20,26 +34,25 @@ const Login = ({ navigation }) => {
           placeholder="Adresse mail"
           autoComplete="email"
           keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
           style={styles.input}
           placeholder="Mot de passe"
           secureTextEntry={true}
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
+      {error && <Text style={{ color: "red" }}>{error}</Text>}
       <View style={styles.buttonContainer}>
-        <ButtonPrimary
-          btnTitle="Se connecter"
-          onPress={() => {
-            console.log("Navigation vers Home");
-            navigation.navigate("Home");
-          }}
-        />
+        <ButtonPrimary btnTitle="Se connecter" onPress={handleLogin} />
         <ButtonSecondary
           btnTitle="Créer son compte"
           onPress={() => {
             console.log("Navigation vers Création de compte");
-            navigation.navigate("Create Account");
+            navigation.navigate("CreateAccount");
           }}
         />
         <ButtonLink btnTitle="Se connecter en invité" />

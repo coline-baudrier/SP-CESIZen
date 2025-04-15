@@ -1,5 +1,6 @@
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
-import React from "react";
+import { AuthContext } from "../context/AuthContext";
+import React, { useContext } from "react";
 import colors from "../constants/colors";
 import ButtonCard from "../components/buttons/ButtonCard";
 import Divider from "../components/utils/Divider";
@@ -12,10 +13,27 @@ import BigTitle from "../components/texts/BigTitle";
 import BreathingExercises from "./BreathingExercises";
 
 const Home = ({ navigation }) => {
+  const { userInfo, isLoading, logout } = useContext(AuthContext);
+
+  console.log("UserInfo in Home:", userInfo);
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <BigTitle title="Bienvenue, Lord_Zara"></BigTitle>
+        <BigTitle title={`Bienvenue ${userInfo?.profile.username ?? "!"}`} />
+
+        <ButtonPrimary
+          onPress={logout}
+          btnTitle="Se déconnecter"
+        ></ButtonPrimary>
         <View style={styles.cardsContainer}>
           <ButtonCard
             title="Humeur"
@@ -29,7 +47,7 @@ const Home = ({ navigation }) => {
             image={require("../assets/backgrounds/humeur.jpg")}
             onPress={() => {
               console.log("Appui sur Respiration");
-              navigation.navigate("Breathing Exercises");
+              navigation.navigate("BreathingExercises");
             }}
           />
         </View>
@@ -38,7 +56,7 @@ const Home = ({ navigation }) => {
             title="Activités"
             image={require("../assets/backgrounds/humeur.jpg")}
             onPress={() => {
-              navigation.navigate("List Activities");
+              navigation.navigate("ListActivities");
             }}
           />
           <ButtonCard
@@ -92,7 +110,7 @@ const Home = ({ navigation }) => {
               <ButtonSecondary
                 btnTitle="Voir toutes les activités"
                 onPress={() => {
-                  navigation.navigate("List Activities");
+                  navigation.navigate("ListActivities");
                 }}
               />
             </View>
