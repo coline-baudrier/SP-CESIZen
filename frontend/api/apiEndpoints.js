@@ -8,4 +8,8 @@ export default {
   BREATHING_EXERCISE: {
     GET_ALL: `${API_BASE}/breathingExercise/getExercises`,
   },
+  ACTIVITIES: {
+    GET_ALL: `${API_BASE}/relaxationActivities/getActivities`,
+    GET_ONE: `${API_BASE}/relaxationActivities/getActivity`,
+  },
 };
