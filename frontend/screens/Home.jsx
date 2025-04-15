@@ -35,10 +35,10 @@ const Home = ({ navigation }) => {
         </View>
         <View style={styles.cardsContainer}>
           <ButtonCard
-            title="Activité"
+            title="Activités"
             image={require("../assets/backgrounds/humeur.jpg")}
             onPress={() => {
-              console.log("Appui sur Activité");
+              navigation.navigate("List Activities");
             }}
           />
           <ButtonCard
@@ -92,9 +92,6 @@ const Home = ({ navigation }) => {
               <ButtonSecondary
                 btnTitle="Voir toutes les activités"
                 onPress={() => {
-                  console.log(
-                    "Navigation Voir la liste de toutes les activités"
-                  );
                   navigation.navigate("List Activities");
                 }}
               />
