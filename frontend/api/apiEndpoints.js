@@ -13,4 +13,9 @@ export default {
     GET_ALL: `${API_BASE}/relaxationActivities/getActivities`,
     GET_ONE: `${API_BASE}/relaxationActivities/getActivity`,
   },
+  ACTIVITIES_FAVORITE: {
+    ADD_IN: `${API_BASE}/favoriteActivity/addFavorite`,
+    GET_FAVORITES: `${API_BASE}/favoriteActivity/getFavorites`,
+    REMOVE_FAVORITE: `${API_BASE}/favoriteActivity/removeFavorite`,
+  },
 };
