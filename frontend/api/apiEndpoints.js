@@ -5,6 +5,7 @@ export default {
     REGISTER: `${API_BASE}/users/createUser`,
     LOGIN: `${API_BASE}/users/authUser`,
     GET_PROFILE: `${API_BASE}/users/getProfile`,
+    UPDATE_PROFILE: `${API_BASE}/users/updateUser`,
   },
   BREATHING_EXERCISE: {
     GET_ALL: `${API_BASE}/breathingExercise/getExercises`,
