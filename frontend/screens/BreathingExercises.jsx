@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import breathingExerciseService from "../api/services/breathingExercise.js";
+import breathingExerciseService from "../api/services/breathingExerciseService.js";
 import MiniTitle from "../components/texts/MiniTitle.jsx";
 import colors from "../constants/colors.js";
 
