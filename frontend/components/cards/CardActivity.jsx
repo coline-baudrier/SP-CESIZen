@@ -7,8 +7,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import colors from "../../constants/colors";
-import relaxationActivityService from "../../api/services/relaxationActivity";
-import favoriteService from "../../api/services/favoriteService";
+import relaxationActivityService from "../../api/services/relaxationActivityService";
+import favoriteService from "../../api/services/favoriteActivityService";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
 

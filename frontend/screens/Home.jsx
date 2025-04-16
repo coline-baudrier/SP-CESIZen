@@ -123,14 +123,6 @@ const Home = ({ navigation }) => {
                 }}
               />
             </View>
-            <View style={styles.buttonWrapper}>
-              <ButtonSecondary
-                btnTitle="Voir mes favoris"
-                onPress={() => {
-                  console.log("Navigation Voir ma liste d'activités favorites");
-                }}
-              />
-            </View>
           </View>
         </View>
         <Divider
