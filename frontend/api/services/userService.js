@@ -31,6 +31,40 @@ const userService = {
       throw error;
     }
   },
+
+  async updateUserProfile(updatedData) {
+    try {
+      const token = await authService.getToken();
+
+      // On filtre les champs vides (sauf username et email qui sont requis)
+      const dataToSend = {};
+      if (updatedData.username) dataToSend.username = updatedData.username;
+      if (updatedData.email) dataToSend.email = updatedData.email;
+      if (updatedData.password) dataToSend.password = updatedData.password;
+
+      const response = await fetch(endpoints.USER.UPDATE_PROFILE, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(
+          result.error || "Erreur lors de la mise à jour du profil"
+        );
+      }
+
+      return result;
+    } catch (error) {
+      console.error("updateProfile error: ", error);
+      throw error;
+    }
+  },
 };
 
 export default userService;

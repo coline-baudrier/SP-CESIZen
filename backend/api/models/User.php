@@ -50,13 +50,18 @@ class User
                 if (!in_array($field, $allowedFields)) {
                     return ["error" => "Champ non autorisé : $field"];
                 }
-
-                if ($field === 'email' && $this->getUserByEmail($value)) {
-                    return ["error" => "Email déjà utilisé"];
+                if ($field === 'email') {
+                    $existingUser = $this->getUserByEmail($value);
+                    if ($existingUser && $existingUser['id'] != $id) {
+                        return ["error" => "Email déjà utilisé"];
+                    }
                 }
 
-                if ($field === 'username' && $this->getUserByUsername($value)) {
-                    return ["error" => "Username déjà pris"];
+                if ($field === 'username') {
+                    $existingUser = $this->getUserByUsername($value);
+                    if ($existingUser && $existingUser['id'] != $id) {
+                        return ["error" => "Nom d'utilisateur déjà pris"];
+                    }
                 }
 
                 if ($field === 'password') {

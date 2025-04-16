@@ -12,6 +12,16 @@ export const AuthProvider = ({ children }) => {
     isLoading: true,
   });
 
+  const updateUserInfo = (newInfo) => {
+    setAuthState((prev) => ({
+      ...prev,
+      userInfo: {
+        ...prev.userInfo,
+        ...newInfo,
+      },
+    }));
+  };
+
   const fetchUserInfo = async () => {
     try {
       const info = await userService.getUserInfo();
@@ -96,7 +106,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ ...authState, login, logout, fetchUserInfo }}
+      value={{ ...authState, login, logout, fetchUserInfo, updateUserInfo }}
     >
       {children}
     </AuthContext.Provider>

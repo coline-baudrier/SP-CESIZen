@@ -46,12 +46,6 @@ const Home = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView ref={scrollViewRef}>
-        <BigTitle title={`Bienvenue ${userInfo?.profile.username ?? "!"}`} />
-
-        <ButtonPrimary
-          onPress={logout}
-          btnTitle="Se déconnecter"
-        ></ButtonPrimary>
         <View style={styles.cardsContainer}>
           <ButtonCard
             title="Humeur"
