@@ -65,6 +65,34 @@ const userService = {
       throw error;
     }
   },
+
+  async createUser(newUserData) {
+    try {
+      const dataToSend = {};
+      if (newUserData.username) dataToSend.username = newUserData.username;
+      if (newUserData.email) dataToSend.email = newUserData.email;
+      if (newUserData.password) dataToSend.password = newUserData.password;
+
+      const response = await fetch(endpoints.USER.REGISTER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(result.error || "Erreur lors de la création du profil");
+      }
+
+      return result;
+    } catch (error) {
+      console.error("createProfile error: ", error);
+      throw error;
+    }
+  },
 };
 
 export default userService;

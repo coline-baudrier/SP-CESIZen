@@ -1,12 +1,58 @@
-import { StyleSheet, Text, View, TextInput, Image } from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, TextInput, Image, Alert } from "react-native";
+import React, { useState } from "react";
 import colors from "../constants/colors";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
-import ButtonLink from "../components/buttons/ButtonLink";
-import ButtonSecondary from "../components/buttons/ButtonSecondary";
+import userService from "../api/services/userService";
 import BigTitle from "../components/texts/BigTitle";
 
 const CreateAccount = ({ navigation }) => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleCreateAccount = async () => {
+    // Validation simple
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      Alert.alert("Erreur", "Tous les champs sont obligatoires");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      Alert.alert("Erreur", "Les mots de passe ne correspondent pas");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const result = await userService.createUser({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        confirm_password: formData.confirmPassword,
+      });
+
+      if (result.error) {
+        Alert.alert("Erreur", result.error);
+      } else {
+        Alert.alert("Succès !", "Le compte a bien été créé.");
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      Alert.alert("Erreur", error.message || "Une erreur est survenue");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -18,32 +64,41 @@ const CreateAccount = ({ navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Nom d'utilisateur"
+          value={formData.username}
+          onChangeText={(text) => setFormData({ ...formData, username: text })}
           autoComplete="username"
         />
         <TextInput
           style={styles.input}
           placeholder="Adresse mail"
+          value={formData.email}
+          onChangeText={(text) => setFormData({ ...formData, email: text })}
           autoComplete="email"
           keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
           placeholder="Mot de passe"
+          value={formData.password}
+          onChangeText={(text) => setFormData({ ...formData, password: text })}
           secureTextEntry={true}
         />
         <TextInput
           style={styles.input}
           placeholder="Confirmer votre mot de passe"
+          value={formData.confirmPassword}
+          onChangeText={(text) =>
+            setFormData({ ...formData, confirmPassword: text })
+          }
           secureTextEntry={true}
         />
       </View>
       <View style={styles.buttonContainer}>
         <ButtonPrimary
-          btnTitle="Créer mon compte"
-          onPress={() => {
-            console.log("Navigation vers Home");
-            navigation.navigate("Home");
-          }}
+          btnTitle={loading ? "Création en cours..." : "Créer mon compte"}
+          onPress={handleCreateAccount}
+          disabled={loading}
         />
       </View>
     </View>
