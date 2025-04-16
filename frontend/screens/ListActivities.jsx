@@ -3,11 +3,13 @@ import colors from "../constants/colors";
 import BigTitle from "../components/texts/BigTitle";
 import relaxationActivityService from "../api/services/relaxationActivity";
 import CardActivity from "../components/cards/CardActivity";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const ListActivities = () => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState([]);
+  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -40,7 +42,6 @@ const ListActivities = () => {
   return (
     <View style={styles.container}>
       <BigTitle title="Activités de relaxation"></BigTitle>
-
       <ScrollView>
         {activities.length > 0 ? (
           activities.map((activity) => (
@@ -49,6 +50,7 @@ const ListActivities = () => {
               activity={activity}
               image={require("../assets/backgrounds/humeur.jpg")}
               showRefreshButton={false}
+              userId={userInfo?.profile?.id}
             />
           ))
         ) : (

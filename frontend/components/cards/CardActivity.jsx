@@ -1,6 +1,14 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import colors from "../../constants/colors";
 import relaxationActivityService from "../../api/services/relaxationActivity";
+import favoriteService from "../../api/services/favoriteService";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
 
@@ -9,47 +17,71 @@ const CardActivity = ({
   activity,
   onRefresh,
   showRefreshButton = true,
+  showFavoriteButton = true,
+  userId,
 }) => {
-  const [randomActivity, setRandomActivity] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentActivity, setCurrentActivity] = useState(activity || null);
+  const [loading, setLoading] = useState(!activity);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   const fetchRandomActivity = async () => {
     try {
       setLoading(true);
-
-      // 1. Récupérer toutes les activités
       const activities =
         await relaxationActivityService.getRelaxationActivities();
+      const activeActivities = activities.filter((a) => a.is_active !== 0);
 
-      // 2. Filtrer pour ne garder que les activités actives (is_active !== 0)
-      const activeActivities = activities.filter(
-        (activity) => activity.is_active !== 0
-      );
-
-      // 3. Vérifier qu'il reste des activités après le filtrage
-      if (activeActivities && activeActivities.length > 0) {
+      if (activeActivities?.length > 0) {
         const randomIndex = Math.floor(Math.random() * activeActivities.length);
-        const selectedActivity = activeActivities[randomIndex];
-
-        // 4. Récupération du détail de l'activité choisie
-        const fullActivity = await relaxationActivityService.getOne(
-          selectedActivity.id
+        const selectedActivity = await relaxationActivityService.getOne(
+          activeActivities[randomIndex].id
         );
-        setRandomActivity(fullActivity);
+        setCurrentActivity(selectedActivity);
+        checkFavoriteStatus(selectedActivity.id);
       } else {
-        setRandomActivity(null); // Aucune activité active disponible
+        setCurrentActivity(null);
       }
     } catch (error) {
-      console.error("Error fetching random activity:", error);
+      console.error("Fetch error:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  const checkFavoriteStatus = async (activityId) => {
+    try {
+      const favoriteStatus = await favoriteService.isFavorite(activityId);
+      setIsFavorite(favoriteStatus);
+    } catch (error) {
+      console.error("Favorite check error:", error);
+    }
+  };
+
+  const toggleFavorite = async () => {
+    if (!currentActivity?.id || favoriteLoading) return;
+
+    try {
+      setFavoriteLoading(true);
+      if (isFavorite) {
+        await favoriteService.removeFavorite(currentActivity.id);
+      } else {
+        await favoriteService.addFavorite(currentActivity.id);
+      }
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Favorite toggle error:", error);
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (activity) {
-      setRandomActivity(activity);
+      setCurrentActivity(activity);
       setLoading(false);
+      checkFavoriteStatus(activity.id);
+      console.log("Checking favorite for:", activity?.id, "User ID:", userId);
     } else {
       fetchRandomActivity();
     }
@@ -57,18 +89,16 @@ const CardActivity = ({
 
   if (loading) {
     return (
-      <View style={styles.cardContainer}>
-        <Text>Chargement...</Text>
+      <View style={[styles.cardContainer, styles.loadingContainer]}>
+        <ActivityIndicator size="small" color={colors.primary} />
       </View>
     );
   }
 
-  if (!randomActivity) {
+  if (!currentActivity) {
     return (
       <View style={styles.cardContainer}>
-        <Text style={styles.noActivityText}>
-          Aucune activité active disponible
-        </Text>
+        <Text style={styles.noActivityText}>Aucune activité disponible</Text>
         <TouchableOpacity
           style={styles.refreshButton}
           onPress={fetchRandomActivity}
@@ -86,26 +116,40 @@ const CardActivity = ({
 
       <View style={styles.contentContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{randomActivity.name}</Text>
+          <Text style={styles.title}>{currentActivity.name}</Text>
           <Text style={styles.description} numberOfLines={2}>
-            {randomActivity.description}
+            {currentActivity.description}
           </Text>
         </View>
 
-        {showRefreshButton && (
-          <TouchableOpacity
-            style={styles.iconContainer}
-            onPress={onRefresh || fetchRandomActivity}
-          >
-            <Icon name="autorenew" size={24} color={colors.primary} />
-          </TouchableOpacity>
-        )}
+        <View style={styles.iconsContainer}>
+          {showFavoriteButton && (
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={toggleFavorite}
+              disabled={favoriteLoading}
+            >
+              <Icon
+                name={isFavorite ? "favorite" : "favorite-outline"}
+                size={24}
+                color={isFavorite ? colors.error : colors.textSecondary}
+              />
+            </TouchableOpacity>
+          )}
+
+          {showRefreshButton && (
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={onRefresh || fetchRandomActivity}
+            >
+              <Icon name="autorenew" size={24} color={colors.primary} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
 };
-
-export default CardActivity;
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -117,6 +161,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 200,
   },
   image: {
     width: "100%",
@@ -137,12 +186,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+    color: colors.textPrimary,
   },
   description: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  iconsContainer: {
+    flexDirection: "row",
   },
   iconContainer: {
     padding: 8,
   },
+  noActivityText: {
+    textAlign: "center",
+    padding: 20,
+    color: colors.textSecondary,
+  },
+  refreshButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
+  refreshText: {
+    marginLeft: 5,
+    color: colors.primary,
+  },
 });
+
+export default CardActivity;

@@ -3,7 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import colors from "../constants/colors";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 // Screens
 import Login from "../screens/Login";
@@ -11,11 +12,13 @@ import CreateAccount from "../screens/CreateAccount";
 import Home from "../screens/Home";
 import ListActivities from "../screens/ListActivities";
 import BreathingExercises from "../screens/BreathingExercises";
+import Profile from "../screens/ProfileUser"; // Créez cet écran
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const { isLoggedIn, role, isLoading, userInfo } = useContext(AuthContext);
+  const { isLoggedIn, role, isLoading, userInfo, logout } =
+    useContext(AuthContext);
 
   // Écran de chargement personnalisé
   if (isLoading) {
@@ -33,6 +36,30 @@ const AppNavigator = () => {
     );
   }
 
+  // Fonction pour le menu (peut être remplacée par un composant plus complexe)
+  const handleMenuPress = (navigation) => {
+    // Ici vous pouvez ouvrir un menu déroulant ou une modal
+    navigation.navigate("Settings"); // Ou autre action
+  };
+
+  // Options communes pour les écrans connectés
+  const commonHeaderOptions = ({ navigation }) => ({
+    headerRight: () => (
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Profile")}
+          style={{ marginRight: 15 }}
+        >
+          <Icon name="account-circle" size={24} color={colors.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleMenuPress(navigation)}>
+          <Icon name="menu" size={24} color={colors.primary} />
+        </TouchableOpacity>
+      </View>
+    ),
+    headerLeft: () => null, // Désactive le bouton retour
+  });
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -40,7 +67,7 @@ const AppNavigator = () => {
           headerStyle: { backgroundColor: colors.surface },
           headerTintColor: colors.textPrimary,
           headerTitleAlign: "center",
-          animation: "fade", // Animation plus douce entre les écrans
+          animation: "fade",
         }}
       >
         {!isLoggedIn ? (
@@ -49,17 +76,14 @@ const AppNavigator = () => {
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{
-                title: "Connexion",
-                headerShown: false, // Cache l'en-tête pour l'écran de connexion
-              }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="CreateAccount"
               component={CreateAccount}
               options={{
                 title: "Créer un compte",
-                headerBackTitle: "Retour", // Texte personnalisé pour le bouton retour
+                headerBackTitle: "Retour",
               }}
             />
           </Stack.Group>
@@ -70,29 +94,37 @@ const AppNavigator = () => {
               name="Home"
               component={Home}
               options={({ navigation }) => ({
-                title: userInfo?.username
+                ...commonHeaderOptions({ navigation }),
+                title: userInfo?.profile.username
                   ? `Bonjour ${userInfo.profile.username}`
                   : "Accueil",
-                headerLeft: () => null, // Désactive le bouton retour sur l'écran d'accueil
               })}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
+              options={{
+                title: "Mon Profil",
+                headerBackTitle: "Retour",
+              }}
             />
             <Stack.Screen
               name="ListActivities"
               component={ListActivities}
-              options={{
+              options={({ navigation }) => ({
+                ...commonHeaderOptions({ navigation }),
                 title: "Activités de relaxation",
-                headerBackTitle: "Retour",
-              }}
+              })}
             />
 
             {role === "admin" && (
               <Stack.Screen
                 name="BreathingExercises"
                 component={BreathingExercises}
-                options={{
+                options={({ navigation }) => ({
+                  ...commonHeaderOptions({ navigation }),
                   title: "Gestion des exercices",
-                  headerBackTitle: "Retour",
-                }}
+                })}
               />
             )}
           </Stack.Group>
