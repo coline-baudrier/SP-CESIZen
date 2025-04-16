@@ -1,6 +1,12 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  findNodeHandle,
+} from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import colors from "../constants/colors";
 import ButtonCard from "../components/buttons/ButtonCard";
 import Divider from "../components/utils/Divider";
@@ -14,6 +20,18 @@ import BreathingExercises from "./BreathingExercises";
 
 const Home = ({ navigation }) => {
   const { userInfo, isLoading, logout } = useContext(AuthContext);
+  const scrollViewRef = useRef(null);
+  const breathingExercisesRef = useRef(null);
+
+  const scrollToBreathingExercises = () => {
+    if (breathingExercisesRef.current && scrollViewRef.current) {
+      breathingExercisesRef.current.measure(
+        (x, y, width, height, pageX, pageY) => {
+          scrollViewRef.current.scrollTo({ y: pageY, animated: true });
+        }
+      );
+    }
+  };
 
   console.log("UserInfo in Home:", userInfo);
 
@@ -27,7 +45,7 @@ const Home = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView ref={scrollViewRef}>
         <BigTitle title={`Bienvenue ${userInfo?.profile.username ?? "!"}`} />
 
         <ButtonPrimary
@@ -45,10 +63,7 @@ const Home = ({ navigation }) => {
           <ButtonCard
             title="Respiration"
             image={require("../assets/backgrounds/humeur.jpg")}
-            onPress={() => {
-              console.log("Appui sur Respiration");
-              navigation.navigate("BreathingExercises");
-            }}
+            onPress={scrollToBreathingExercises}
           />
         </View>
         <View style={styles.cardsContainer}>
@@ -130,8 +145,12 @@ const Home = ({ navigation }) => {
           marginVertical={10}
         ></Divider>
         <BigTitle title="Exercices de respiration"></BigTitle>
-        <View style={styles.cardsContainer}>
-          <BreathingExercises scrollEnabled={false}></BreathingExercises>
+        <View
+          ref={breathingExercisesRef}
+          onLayout={() => {}}
+          style={styles.cardsContainer}
+        >
+          <BreathingExercises scrollEnabled={false} />
         </View>
         <Divider
           color={colors.secondaryDark}

@@ -71,7 +71,7 @@ const AppNavigator = () => {
               component={Home}
               options={({ navigation }) => ({
                 title: userInfo?.username
-                  ? `Bonjour ${userInfo.username}`
+                  ? `Bonjour ${userInfo.profile.username}`
                   : "Accueil",
                 headerLeft: () => null, // Désactive le bouton retour sur l'écran d'accueil
               })}
