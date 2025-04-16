@@ -19,4 +19,8 @@ export default {
     GET_FAVORITES: `${API_BASE}/favoriteActivity/getFavorites`,
     REMOVE_FAVORITE: `${API_BASE}/favoriteActivity/removeFavorite`,
   },
+  EMOTION_TRACKER: {
+    GET_JOURNAL: `${API_BASE}/emotionTracker/getJournal`,
+    GET_JOURNAL_PERIOD: `${API_BASE}/emotionTracker/getJournalByPeriod`,
+  },
 };
