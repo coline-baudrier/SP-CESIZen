@@ -27,7 +27,11 @@ const Home = ({ navigation }) => {
     if (breathingExercisesRef.current && scrollViewRef.current) {
       breathingExercisesRef.current.measure(
         (x, y, width, height, pageX, pageY) => {
-          scrollViewRef.current.scrollTo({ y: pageY, animated: true });
+          scrollViewRef.current.scrollTo({
+            y: Math.max(0, pageY - 175),
+            animated: true,
+            duration: 1000,
+          });
         }
       );
     }
@@ -45,7 +49,12 @@ const Home = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView ref={scrollViewRef}>
+      <ScrollView
+        ref={scrollViewRef}
+        scrollEventThrottle={16}
+        decelerationRate="normal"
+        snapToAlignment="start"
+      >
         <View style={styles.cardsContainer}>
           <ButtonCard
             title="Humeur"
@@ -133,6 +142,7 @@ const Home = ({ navigation }) => {
         <BigTitle title="Exercices de respiration"></BigTitle>
         <View
           ref={breathingExercisesRef}
+          collapsable={false}
           onLayout={() => {}}
           style={styles.cardsContainer}
         >
