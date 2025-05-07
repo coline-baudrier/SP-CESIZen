@@ -1,4 +1,6 @@
+import apiEndpoints from "../apiEndpoints";
 import endpoints from "../apiEndpoints";
+import authService from "./authService";
 
 const relaxationActivityService = {
   /**
@@ -51,6 +53,30 @@ const relaxationActivityService = {
       return await response.json();
     } catch (error) {
       console.error("getOne relaxation activity error:", error);
+      throw error;
+    }
+  },
+  async toggleActivityStatus(activityId) {
+    try {
+      const response = await fetch(apiEndpoints.ACTIVITIES.TOGGLE, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${await authService.getToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: activityId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+          error.error || "Erreur lors de la modification du statut"
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("toggleActivityStatus error:", error);
       throw error;
     }
   },

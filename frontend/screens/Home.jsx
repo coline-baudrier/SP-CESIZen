@@ -3,10 +3,12 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  ActivityIndicator,
   findNodeHandle,
+  Text,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
 import colors from "../constants/colors";
 import ButtonCard from "../components/buttons/ButtonCard";
 import Divider from "../components/utils/Divider";
@@ -17,11 +19,38 @@ import CardActivity from "../components/cards/CardActivity";
 import CardResultStress from "../components/cards/CardResultStress";
 import BigTitle from "../components/texts/BigTitle";
 import BreathingExercises from "./BreathingExercises";
+import emotionTrackerService from "../api/services/emotionTrackerService";
 
 const Home = ({ navigation }) => {
-  const { userInfo, isLoading, logout, role } = useContext(AuthContext);
+  const { userInfo, token, isLoading, logout, role } = useContext(AuthContext);
   const scrollViewRef = useRef(null);
   const breathingExercisesRef = useRef(null);
+  const [recentEmotions, setRecentEmotions] = useState([]);
+  const [loadingEmotions, setLoadingEmotions] = useState(true);
+
+  useEffect(() => {
+    if (role !== "guest") {
+      fetchRecentEmotions();
+    }
+  }, [role]);
+
+  const fetchRecentEmotions = async () => {
+    try {
+      const token = userInfo?.token;
+      if (!token) return;
+
+      const entries = await emotionTrackerService.getJournalEntries(token);
+      // Trier par date et prendre les 3 premières
+      const sortedEntries = entries.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+      setRecentEmotions(sortedEntries.slice(0, 3));
+    } catch (error) {
+      console.error("Error fetching recent emotions:", error);
+    } finally {
+      setLoadingEmotions(false);
+    }
+  };
 
   const scrollToBreathingExercises = () => {
     if (breathingExercisesRef.current && scrollViewRef.current) {
@@ -37,7 +66,7 @@ const Home = ({ navigation }) => {
     }
   };
 
-  console.log("UserInfo in Home:", userInfo);
+  console.log("UserInfo in Home:", userInfo, token);
 
   if (isLoading) {
     return (
@@ -61,7 +90,7 @@ const Home = ({ navigation }) => {
               title="Humeur"
               image={require("../assets/backgrounds/humeur.jpg")}
               onPress={() => {
-                console.log("Appui sur Humeur");
+                navigation.navigate("EmotionTracker");
               }}
             />
           )}
@@ -98,27 +127,33 @@ const Home = ({ navigation }) => {
         {role !== "guest" && (
           <>
             <BigTitle title="Mes émotions"></BigTitle>
-            <CardFeelings
-              titleCard="Titre"
-              dateCard="Hier"
-              noteCard=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dignissim ex libero, non pretium lorem sollicitudin vitae. Fusce et convallis ipsum. Duis in justo dictum, porta mi at, sagittis ante. Proin dapibus dapibus ultricies. Duis vitae mauris sed lectus volutpat ornare sed non sapien. Sed a libero magna."
-            ></CardFeelings>
-            <CardFeelings
-              titleCard="Titre"
-              dateCard="Hier"
-              noteCard=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dignissim ex libero, non pretium lorem sollicitudin vitae. Fusce et convallis ipsum. Duis in justo dictum, porta mi at, sagittis ante. Proin dapibus dapibus ultricies. Duis vitae mauris sed lectus volutpat ornare sed non sapien. Sed a libero magna."
-            ></CardFeelings>
-            <CardFeelings
-              titleCard="Titre"
-              dateCard="Hier"
-              noteCard=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dignissim ex libero, non pretium lorem sollicitudin vitae. Fusce et convallis ipsum. Duis in justo dictum, porta mi at, sagittis ante. Proin dapibus dapibus ultricies. Duis vitae mauris sed lectus volutpat ornare sed non sapien. Sed a libero magna."
-            ></CardFeelings>
+
+            {loadingEmotions ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : recentEmotions.length > 0 ? (
+              recentEmotions.map((emotion, index) => (
+                <CardFeelings
+                  key={index}
+                  titleCard={emotion.title || "Sans titre"}
+                  dateCard={formatDate(emotion.date)}
+                  noteCard={emotion.description}
+                  onPress={() =>
+                    navigation.navigate("EmotionDetail", {
+                      emotionId: emotion.id,
+                    })
+                  }
+                />
+              ))
+            ) : (
+              <Text style={styles.noEmotionsText}>
+                Aucune émotion enregistrée
+              </Text>
+            )}
+
             <ButtonPrimary
               btnTitle="Enregistrer mon humeur du jour"
-              onPress={() => {
-                console.log("Navigation Enregistrer une nouvelle émotion");
-              }}
-            ></ButtonPrimary>
+              onPress={() => navigation.navigate("CreateEmotion")}
+            />
 
             <Divider
               color={colors.secondaryDark}
@@ -187,6 +222,24 @@ const Home = ({ navigation }) => {
   );
 };
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) {
+    return "Aujourd'hui";
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return "Hier";
+  } else {
+    return date.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+    });
+  }
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -219,6 +272,11 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flex: 1,
     marginHorizontal: 1,
+  },
+  noEmotionsText: {
+    textAlign: "center",
+    color: colors.secondary,
+    marginVertical: 20,
   },
 });
 

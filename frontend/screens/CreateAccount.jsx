@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TextInput, Image, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import colors from "../constants/colors";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import userService from "../api/services/userService";
 import BigTitle from "../components/texts/BigTitle";
+import { AuthContext } from "../context/AuthContext";
 
 const CreateAccount = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,11 @@ const CreateAccount = ({ navigation }) => {
     password: "",
     confirmPassword: "",
   });
+
+  const { userInfo, role } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+
+  const isAdminCreation = role === "admin" || route.params?.isAdminCreation;
 
   const handleCreateAccount = async () => {
     // Validation simple
@@ -33,18 +38,35 @@ const CreateAccount = ({ navigation }) => {
 
     try {
       setLoading(true);
-      const result = await userService.createUser({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        confirm_password: formData.confirmPassword,
-      });
+      let result;
+
+      if (isAdminCreation) {
+        // Création d'un admin
+        result = await userService.createAdmin({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        });
+      } else {
+        // Création d'un compte normal
+        result = await userService.createUser({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          confirm_password: formData.confirmPassword,
+        });
+      }
 
       if (result.error) {
         Alert.alert("Erreur", result.error);
       } else {
-        Alert.alert("Succès !", "Le compte a bien été créé.");
-        navigation.navigate("Login");
+        Alert.alert(
+          "Succès !",
+          isAdminCreation
+            ? "Le compte administrateur a bien été créé."
+            : "Le compte a bien été créé."
+        );
+        navigation.goBack();
       }
     } catch (error) {
       Alert.alert("Erreur", error.message || "Une erreur est survenue");
@@ -60,7 +82,9 @@ const CreateAccount = ({ navigation }) => {
         source={require("../assets/logo-cesizen.png")}
       />
       <View style={styles.inputContainer}>
-        <BigTitle title="Inscrivez-vous"></BigTitle>
+        <BigTitle
+          title={isAdminCreation ? "Créer un administrateur" : "Inscrivez-vous"}
+        />
         <TextInput
           style={styles.input}
           placeholder="Nom d'utilisateur"
@@ -84,6 +108,7 @@ const CreateAccount = ({ navigation }) => {
           onChangeText={(text) => setFormData({ ...formData, password: text })}
           secureTextEntry={true}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Confirmer votre mot de passe"
@@ -96,7 +121,15 @@ const CreateAccount = ({ navigation }) => {
       </View>
       <View style={styles.buttonContainer}>
         <ButtonPrimary
-          btnTitle={loading ? "Création en cours..." : "Créer mon compte"}
+          btnTitle={
+            loading
+              ? isAdminCreation
+                ? "Création de l'admin..."
+                : "Création en cours..."
+              : isAdminCreation
+              ? "Créer l'administrateur"
+              : "Créer mon compte"
+          }
           onPress={handleCreateAccount}
           disabled={loading}
         />

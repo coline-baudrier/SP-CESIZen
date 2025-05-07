@@ -117,40 +117,41 @@ class EmotionTracker
     }
 
     public function getJournalByPeriod($userId, $period)
-    {
-        try {
-            $sql = "SELECT et.id, et.emotion_id, em.name AS emotion_name, et.intensity, et.note, et.created_at, et.updated_at 
-                FROM " . $this->table . " et
-                JOIN emotions em ON et.emotion_id = em.id
-                WHERE et.user_id = :user_id";
+{
+    try {
+        $sql = "SELECT et.id, et.emotion_id, em.name AS emotion_name, et.intensity, et.note, et.created_at, et.updated_at 
+            FROM " . $this->table . " et
+            JOIN emotions em ON et.emotion_id = em.id
+            WHERE et.user_id = :user_id";
 
-            switch ($period) {
-                case "day":
-                    $sql .= " AND DATE(et.created_at) = CURATE()";
-                    break;
-                case "week":
-                    $sql .= " AND YEAR WEEK(et.created_at, 1) = YEAR WEEK(NOW(), 1)";
-                    break;
-                case "month":
-                    $sql .= " AND MONTH(et.created_at) = MONTH(NOW()) AND YEAR(et.created_at) = YEAR(NOW())";
-                    break;
-                case "year":
-                    $sql .= " AND YEAR(et.created_at) = YEAR(NOW())";
-                    break;
-                default:
-                    return ["error" => "Période invalide"];
-            }
-
-            $sql .= " ORDER BY et.created_at DESC";
-
-            $query = $this->pdo->prepare($sql);
-            $query->execute([':user_id' => $userId]);
-            return $query->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
-        } catch (PDOException $e) {
-            error_log("Erreur SQL: " . $e->getMessage());
-            return ["error" => "Erreur lors de la récupération des émotions"];
+        switch ($period) {
+            case "day":
+                $sql .= " AND DATE(et.created_at) = CURDATE()";
+                break;
+            case "week":
+                $sql .= " AND YEARWEEK(et.created_at, 1) = YEARWEEK(NOW(), 1)";
+                break;
+            case "month":
+                $sql .= " AND MONTH(et.created_at) = MONTH(NOW()) AND YEAR(et.created_at) = YEAR(NOW())";
+                break;
+            case "year":
+                $sql .= " AND YEAR(et.created_at) = YEAR(NOW())";
+                break;
+            default:
+                return ["error" => "Période invalide"];
         }
+
+        $sql .= " ORDER BY et.created_at DESC";
+
+        $query = $this->pdo->prepare($sql);
+        $query->execute([':user_id' => $userId]);
+        return $query->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    } catch (PDOException $e) {
+        error_log("Erreur SQL: " . $e->getMessage());
+        return ["error" => "Erreur lors de la récupération des émotions"];
     }
+}
+
 
 }

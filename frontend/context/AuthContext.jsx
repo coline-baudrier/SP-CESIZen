@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import authService from "./../api/services/authService.js";
 import userService from "./../api/services/userService.js";
-import { isLoading } from "expo-font";
 
 export const AuthContext = createContext();
 
@@ -46,7 +45,19 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  //   Vérification intiale de l'authentification
+  const mapRole = (roleId) => {
+    switch (roleId) {
+      case 1:
+        return "user";
+      case 2:
+        return "admin";
+      case 3:
+        return "moderator";
+      default:
+        return "guest";
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -56,8 +67,8 @@ export const AuthProvider = ({ children }) => {
           const userInfo = await fetchUserInfo();
           setAuthState({
             isLoggedIn: true,
-            role,
-            userInfo, // Assurez-vous que userInfo contient bien le username
+            role: mapRole(role), // Convertir le rôle numérique
+            userInfo,
             isLoading: false,
           });
         } else {
@@ -92,8 +103,11 @@ export const AuthProvider = ({ children }) => {
 
       setAuthState({
         isLoggedIn: true,
-        role: decoded.role,
-        userInfo, // Ici aussi
+        role: mapRole(decoded.role), // Convertir le rôle numérique
+        userInfo: {
+          ...userInfo,
+          token: data.token,
+        },
         isLoading: false,
       });
 
@@ -118,6 +132,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         ...authState,
+        token: authState.userInfo?.token ?? null, // ✅ Ajouté ici
         login,
         logout,
         fetchUserInfo,

@@ -93,6 +93,81 @@ const userService = {
       throw error;
     }
   },
+  async getAllUsers() {
+    try {
+      const response = await fetch(endpoints.USER.GET_ALL, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${await authService.getToken()}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+          error.error || "Erreur lors de la récupération des utilisateurs"
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("getAllUsers error:", error);
+      throw error;
+    }
+  },
+
+  async deleteUser(userId) {
+    try {
+      const response = await fetch(endpoints.USER.DELETE, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${await authService.getToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Erreur lors de la suppression");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("deleteUser error:", error);
+      throw error;
+    }
+  },
+  async createAdmin(newAdminData) {
+    try {
+      const response = await fetch(endpoints.USER.CREATE_ADMIN, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${await authService.getToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: newAdminData.username,
+          email: newAdminData.email,
+          password: newAdminData.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(
+          result.error || "Erreur lors de la création de l'admin"
+        );
+      }
+
+      return result;
+    } catch (error) {
+      console.error("createAdmin error: ", error);
+      throw error;
+    }
+  },
 };
 
 export default userService;

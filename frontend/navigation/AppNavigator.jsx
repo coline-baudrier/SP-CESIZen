@@ -13,6 +13,11 @@ import Home from "../screens/Home";
 import ListActivities from "../screens/ListActivities";
 import BreathingExercises from "../screens/BreathingExercises";
 import Profile from "../screens/ProfileUser";
+import EmotionTracker from "../screens/EmotionTracker";
+import CreateEmotionTracker from "../screens/CreateNewEmotion";
+import ModeratorView from "../screens/ModeratorView";
+import UserManagement from "../screens/UserManagement";
+import ActivityManagement from "../screens/ActivityManagement";
 
 const Stack = createNativeStackNavigator();
 
@@ -63,9 +68,20 @@ const AppNavigator = () => {
     headerLeft: () => null,
   });
 
+  // Déterminez l'écran initial en fonction du rôle
+  const getInitialRoute = () => {
+    if (role === "admin") {
+      return "ModeratorView"; // Admin accède uniquement à l'écran "ModeratorView"
+    } else if (isLoggedIn) {
+      return "Home"; // Autres utilisateurs connectés accèdent à "Home"
+    }
+    return "Login"; // Si non connecté, écran Login
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName={getInitialRoute()} // Définir l'écran initial en fonction du rôle
         screenOptions={{
           headerStyle: { backgroundColor: colors.surface },
           headerTintColor: colors.textPrimary,
@@ -87,55 +103,126 @@ const AppNavigator = () => {
         {/* App Screens (connectés) */}
         {isLoggedIn && (
           <>
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={({ navigation }) => ({
-                ...commonHeaderOptions({ navigation }),
-                title: userInfo?.profile.username
-                  ? `Bonjour ${userInfo.profile.username}`
-                  : "Accueil",
-              })}
-            />
+            {/* Écran ModeratorView pour les admins */}
+            {role === "admin" && (
+              <>
+                <Stack.Screen
+                  name="ModeratorView"
+                  component={ModeratorView}
+                  options={({ navigation }) => ({
+                    ...commonHeaderOptions({ navigation }),
+                    title: "Panneau d'administration",
+                  })}
+                />
 
-            <Stack.Screen
-              name="Profile"
-              component={Profile}
-              options={{
-                title: "Mon Profil",
-                headerBackTitle: "Retour",
-              }}
-            />
-
-            {/* Accessible uniquement aux invités connectés */}
-            {role === "guest" && (
-              <Stack.Screen
-                name="CreateAccount"
-                component={CreateAccount}
-                options={{
-                  title: "Créer un compte",
-                  headerBackTitle: "Retour",
-                }}
-              />
+                <Stack.Screen
+                  name="UserManagement"
+                  component={UserManagement}
+                  options={{
+                    title: "Gestion des utilisateurs",
+                    headerBackTitle: "Retour",
+                  }}
+                />
+                <Stack.Screen
+                  name="CreateAccount"
+                  component={CreateAccount}
+                  options={{
+                    title: "Création compte Administrateur",
+                    headerBackTitle: "Retour",
+                  }}
+                />
+                <Stack.Screen
+                  name="ActivityManagement"
+                  component={ActivityManagement}
+                  options={{
+                    title: "Gestion des activités",
+                    headerBackTitle: "Retour",
+                  }}
+                />
+              </>
             )}
 
-            <Stack.Screen
-              name="ListActivities"
-              component={ListActivities}
-              options={({ navigation }) => ({
-                ...commonHeaderOptions({ navigation }),
-                title: "Activités de relaxation",
-              })}
-            />
+            {/* Écran Home pour les non-admins */}
+            {role !== "admin" && (
+              <>
+                <Stack.Screen
+                  name="Home"
+                  component={Home}
+                  options={({ navigation }) => ({
+                    ...commonHeaderOptions({ navigation }),
+                    title: userInfo?.profile.username
+                      ? `Bonjour ${userInfo.profile.username}`
+                      : "Accueil",
+                  })}
+                />
 
+                <Stack.Screen
+                  name="Profile"
+                  component={Profile}
+                  options={{
+                    title: "Mon Profil",
+                    headerBackTitle: "Retour",
+                  }}
+                />
+
+                {/* Accessible uniquement aux invités connectés */}
+                {role === "guest" && (
+                  <Stack.Screen
+                    name="CreateAccount"
+                    component={CreateAccount}
+                    options={{
+                      title: "Créer un compte",
+                      headerBackTitle: "Retour",
+                    }}
+                  />
+                )}
+
+                <Stack.Screen
+                  name="ListActivities"
+                  component={ListActivities}
+                  options={({ navigation }) => ({
+                    ...commonHeaderOptions({ navigation }),
+                    title: "Activités de relaxation",
+                  })}
+                />
+
+                <Stack.Screen
+                  name="EmotionTracker"
+                  component={EmotionTracker}
+                  options={{
+                    title: "Mes Emotions",
+                    headerBackTitle: "Retour",
+                  }}
+                />
+
+                <Stack.Screen
+                  name="CreateEmotion"
+                  component={CreateEmotionTracker}
+                  options={{
+                    title: "Enregistrer Emotion",
+                    headerBackTitle: "Retour",
+                  }}
+                />
+                <Stack.Screen
+                  name="BreathingExercises"
+                  component={BreathingExercises}
+                  options={({ navigation }) => ({
+                    ...commonHeaderOptions({ navigation }),
+                    title: "Gestion des exercices",
+                  })}
+                />
+              </>
+            )}
+
+            {/* Permettre aux admins d'accéder à l'écran Profil */}
             {role === "admin" && (
               <Stack.Screen
-                name="BreathingExercises"
-                component={BreathingExercises}
-                options={({ navigation }) => ({
-                  ...commonHeaderOptions({ navigation }),
-                  title: "Gestion des exercices",
-                })}
+                name="Profile"
+                component={Profile}
+                options={{
+                  title: "Mon Profil",
+                  headerBackTitle: "Retour",
+                }}
               />
             )}
           </>
