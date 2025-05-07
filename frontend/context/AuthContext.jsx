@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import authService from "./../api/services/authService.js";
 import userService from "./../api/services/userService.js";
+import { isLoading } from "expo-font";
 
 export const AuthContext = createContext();
 
@@ -34,6 +35,15 @@ export const AuthProvider = ({ children }) => {
       console.error("Failed to fetch user info:", error);
       throw error;
     }
+  };
+
+  const loginGuest = async () => {
+    setAuthState({
+      isLoggedIn: true,
+      role: "guest",
+      userInfo: null,
+      isLoading: false,
+    });
   };
 
   //   Vérification intiale de l'authentification
@@ -106,7 +116,14 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ ...authState, login, logout, fetchUserInfo, updateUserInfo }}
+      value={{
+        ...authState,
+        login,
+        logout,
+        fetchUserInfo,
+        updateUserInfo,
+        loginGuest,
+      }}
     >
       {children}
     </AuthContext.Provider>

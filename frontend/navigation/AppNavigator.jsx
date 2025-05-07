@@ -12,15 +12,14 @@ import CreateAccount from "../screens/CreateAccount";
 import Home from "../screens/Home";
 import ListActivities from "../screens/ListActivities";
 import BreathingExercises from "../screens/BreathingExercises";
-import Profile from "../screens/ProfileUser"; // Créez cet écran
+import Profile from "../screens/ProfileUser";
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const { isLoggedIn, role, isLoading, userInfo, logout } =
-    useContext(AuthContext);
+  const { isLoggedIn, role, isLoading, userInfo } = useContext(AuthContext);
 
-  // Écran de chargement personnalisé
+  // Loading screen
   if (isLoading) {
     return (
       <View
@@ -36,28 +35,32 @@ const AppNavigator = () => {
     );
   }
 
-  // Fonction pour le menu (peut être remplacée par un composant plus complexe)
+  // Header menu button
   const handleMenuPress = (navigation) => {
-    // Ici vous pouvez ouvrir un menu déroulant ou une modal
-    navigation.navigate("Settings"); // Ou autre action
+    navigation.navigate("Settings");
   };
 
-  // Options communes pour les écrans connectés
+  // Header options
   const commonHeaderOptions = ({ navigation }) => ({
     headerRight: () => (
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Profile")}
+          onPress={() =>
+            role === "guest"
+              ? navigation.navigate("CreateAccount")
+              : navigation.navigate("Profile")
+          }
           style={{ marginRight: 15 }}
         >
           <Icon name="account-circle" size={24} color={colors.primary} />
         </TouchableOpacity>
+
         <TouchableOpacity onPress={() => handleMenuPress(navigation)}>
           <Icon name="menu" size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
     ),
-    headerLeft: () => null, // Désactive le bouton retour
+    headerLeft: () => null,
   });
 
   return (
@@ -70,26 +73,20 @@ const AppNavigator = () => {
           animation: "fade",
         }}
       >
-        {!isLoggedIn ? (
-          // Stack pour utilisateurs non connectés
-          <Stack.Group>
+        {/* Auth Screens (non connectés) */}
+        {!isLoggedIn && (
+          <>
             <Stack.Screen
               name="Login"
               component={Login}
               options={{ headerShown: false }}
             />
-            <Stack.Screen
-              name="CreateAccount"
-              component={CreateAccount}
-              options={{
-                title: "Créer un compte",
-                headerBackTitle: "Retour",
-              }}
-            />
-          </Stack.Group>
-        ) : (
-          // Stack pour utilisateurs connectés
-          <Stack.Group>
+          </>
+        )}
+
+        {/* App Screens (connectés) */}
+        {isLoggedIn && (
+          <>
             <Stack.Screen
               name="Home"
               component={Home}
@@ -100,6 +97,7 @@ const AppNavigator = () => {
                   : "Accueil",
               })}
             />
+
             <Stack.Screen
               name="Profile"
               component={Profile}
@@ -108,6 +106,19 @@ const AppNavigator = () => {
                 headerBackTitle: "Retour",
               }}
             />
+
+            {/* Accessible uniquement aux invités connectés */}
+            {role === "guest" && (
+              <Stack.Screen
+                name="CreateAccount"
+                component={CreateAccount}
+                options={{
+                  title: "Créer un compte",
+                  headerBackTitle: "Retour",
+                }}
+              />
+            )}
+
             <Stack.Screen
               name="ListActivities"
               component={ListActivities}
@@ -127,7 +138,7 @@ const AppNavigator = () => {
                 })}
               />
             )}
-          </Stack.Group>
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

@@ -11,7 +11,7 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login, loginGuest } = useContext(AuthContext);
 
   const handleLogin = async () => {
     setError("");
@@ -55,7 +55,10 @@ const Login = ({ navigation }) => {
             navigation.navigate("CreateAccount");
           }}
         />
-        <ButtonLink btnTitle="Se connecter en invité" />
+        <ButtonSecondary
+          btnTitle="Se connecter en invité"
+          onPress={loginGuest}
+        />
       </View>
     </View>
   );

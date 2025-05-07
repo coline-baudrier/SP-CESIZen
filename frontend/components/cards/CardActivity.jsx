@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import { AuthContext } from "../../context/AuthContext";
 import colors from "../../constants/colors";
 import relaxationActivityService from "../../api/services/relaxationActivityService";
 import favoriteService from "../../api/services/favoriteActivityService";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 const CardActivity = ({
   image,
@@ -24,6 +25,8 @@ const CardActivity = ({
   const [loading, setLoading] = useState(!activity);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  const { role } = useContext(AuthContext);
 
   const fetchRandomActivity = async () => {
     try {
@@ -99,6 +102,7 @@ const CardActivity = ({
     return (
       <View style={styles.cardContainer}>
         <Text style={styles.noActivityText}>Aucune activité disponible</Text>
+
         <TouchableOpacity
           style={styles.refreshButton}
           onPress={fetchRandomActivity}
@@ -123,7 +127,7 @@ const CardActivity = ({
         </View>
 
         <View style={styles.iconsContainer}>
-          {showFavoriteButton && (
+          {role !== "guest" && showFavoriteButton && (
             <TouchableOpacity
               style={styles.iconContainer}
               onPress={toggleFavorite}

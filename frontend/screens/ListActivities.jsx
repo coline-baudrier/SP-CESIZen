@@ -16,7 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 import favoriteService from "../api/services/favoriteActivityService";
 
 const ListActivities = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, role } = useContext(AuthContext);
   const [allActivities, setAllActivities] = useState([]);
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -85,15 +85,17 @@ const ListActivities = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <BigTitle title="Activités de relaxation" />
-        <View style={styles.toggleContainer}>
-          <Text style={styles.toggleText}>Favoris seulement</Text>
-          <Switch
-            value={showFavoritesOnly}
-            onValueChange={setShowFavoritesOnly}
-            trackColor={{ true: colors.primary }}
-            thumbColor={colors.white}
-          />
-        </View>
+        {role !== "guest" && (
+          <View style={styles.toggleContainer}>
+            <Text style={styles.toggleText}>Favoris seulement</Text>
+            <Switch
+              value={showFavoritesOnly}
+              onValueChange={setShowFavoritesOnly}
+              trackColor={{ true: colors.primary }}
+              thumbColor={colors.white}
+            />
+          </View>
+        )}
       </View>
 
       <ScrollView
