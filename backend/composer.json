@@ -2,9 +2,15 @@
     "name": "coline/backend",
     "autoload": {
         "psr-4": {
-            "Coline\\Backend\\": "src/"
+            "": "api/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Coline\\Backend\\Tests\\": "tests/"
+        }
+    },
+
     "authors": [
         {
             "name": "coline-baudrier",
@@ -14,6 +20,10 @@
     "require": {
         "vlucas/phpdotenv": "^5.6",
         "firebase/php-jwt": "^6.11",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
     }
 }

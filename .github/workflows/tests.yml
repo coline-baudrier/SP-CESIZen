@@ -1,0 +1,81 @@
+name: Run Tests (Unit, Functional & Non-Regression)
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - test
+      - production
+
+jobs:
+  unit-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'dev' || github.base_ref == 'test'
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}  # Charge la clé JWT depuis GitHub Secrets
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install PHP dependencies
+        run: |
+          cd backend
+          composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit Unit Tests
+        run: |
+          cd backend
+          vendor/bin/phpunit --testsuite UnitTests
+
+  functional-tests:
+    name: Run Functional Tests
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'test' || github.base_ref == 'production'
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install PHP dependencies
+        run: |
+          cd backend
+          composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit Functional Tests
+        run: |
+          cd backend
+          vendor/bin/phpunit --testsuite FunctionalTests
+
+  non-regression-tests:
+    name: Run Non-Regression Tests
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'test' || github.base_ref == 'production'
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install PHP dependencies
+        run: |
+          cd backend
+          composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit Non-Regression Tests
+        run: |
+          cd backend
+          vendor/bin/phpunit --testsuite NonRegressionTests
