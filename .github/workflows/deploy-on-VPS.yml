@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pull-requests: write
   deployments: write
 
@@ -58,22 +59,31 @@ jobs:
 
       # 3. Mise à jour de l'issue
       - name: Update Issue Status
+        if: success()  # Ne s'exécute que si les étapes précédentes réussissent
         uses: actions/github-script@v6
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         with:
           script: |
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: ${{ github.event.issue.number }},
-              state: 'closed',
-              labels: ['deployed']
-            })
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: ${{ github.event.issue.number }},
-              body: '✅ Déployé en production par GitHub Actions\n\n' +
-                    `- Commit: ${process.env.GITHUB_SHA}\n` +
-                    '- Containers rebuildés et relancés'
-            })
+            try {
+              // Fermer l'issue et mettre à jour les labels
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: process.env.ISSUE_NUMBER,
+                state: 'closed',
+                labels: ['deployed']
+              });
+      
+              // Ajouter un commentaire
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: process.env.ISSUE_NUMBER,
+                body: `✅ Déployé en production !\n\n` +
+                      `- Commit: ${process.env.GITHUB_SHA}\n` +
+                      `- Date: ${new Date().toISOString()}`
+              });
+            } catch (error) {
+              console.error('Erreur lors de la mise à jour de l\'issue:', error);
+            }
