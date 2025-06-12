@@ -1,0 +1,79 @@
+name: Create Branch on In Progress Issue
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  create-branch:
+    if: github.event.label.name == 'in progress'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create branch name
+        id: branch_name
+        run: |
+          ISSUE_ID=${{ github.event.issue.number }}
+          # Nettoie le titre de l'issue pour un nom de branche valide
+          CLEAN_TITLE=$(echo "${{ github.event.issue.title }}" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9]/-/g' -e 's/-\+/-/g' -e 's/^-//' -e 's/-$//')
+          echo "branch_name=issue-$ISSUE_ID-$CLEAN_TITLE" >> $GITHUB_OUTPUT
+
+      - name: Create new branch
+        uses: actions/github-script@v6
+        with:
+          script: |
+            try {
+              const branchName = '${{ steps.branch_name.outputs.branch_name }}'
+              const ref = `refs/heads/${branchName}`
+              
+              // Vérifie si la branche existe déjà
+              const existingRef = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `heads/${branchName}`
+              }).catch(() => null)
+
+              if (!existingRef) {
+                // Crée la branche à partir de dev
+                const devRef = await github.rest.git.getRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: 'heads/dev'
+                })
+
+                await github.rest.git.createRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: ref,
+                  sha: devRef.data.object.sha
+                })
+
+                // Ajoute un commentaire à l'issue
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: ${{ github.event.issue.number }},
+                  body: `Branche créée : [${branchName}](https://github.com/${{ github.repository }}/tree/${branchName})`
+                })
+              }
+            } catch (error) {
+              core.setFailed(`Erreur lors de la création de la branche : ${error}`)
+            }
+
+      - name: Update issue state
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }},
+              state: 'open',
+              labels: ['in progress']
+            })
