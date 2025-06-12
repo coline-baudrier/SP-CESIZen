@@ -1,0 +1,127 @@
+name: Tests Automatisés sur PR
+
+on:
+  pull_request:
+    branches: [dev]
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Test de connexion à la DB (gardé au cas où)
+      - name: Test DB Connection
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          if ! mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "USE $DB_NAME; SELECT 1;" >/dev/null 2>&1; then
+            echo "::error::Échec de la connexion à la base de données"
+            exit 1
+          else
+            echo "✅ Connexion DB réussie"
+          fi
+
+      # Test API conforme à vos endpoints
+      - name: Test API Connection
+        id: api_test
+        env:
+          API_URL: "http://79.137.33.245:8000/api"
+          API_EMAIL: ${{ secrets.API_EMAIL }}
+          API_PASSWORD: ${{ secrets.API_PASSWORD }}
+        run: |
+          # Installer jq pour le parsing JSON
+          sudo apt-get -qq install jq
+
+          # 1. Authentification
+          echo "Tentative d'authentification sur ${API_URL}/users/authUser.php"
+          AUTH_RESPONSE=$(curl -s -X POST "${API_URL}/users/authUser.php" \
+            -H "Content-Type: application/json" \
+            -d "{\"email\":\"$API_EMAIL\",\"password\":\"$API_PASSWORD\"}")
+
+          echo "Réponse d'authentification: $AUTH_RESPONSE"
+
+          if [ -z "$AUTH_RESPONSE" ] || [ $(echo "$AUTH_RESPONSE" | jq -e '.token == null' 2>/dev/null) == "true" ]; then
+            echo "::error::Échec de l'authentification API"
+            echo "Réponse complète: $AUTH_RESPONSE"
+            exit 1
+          fi
+
+          TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.token')
+          echo "✅ Authentification API réussie"
+          echo "token=${TOKEN}" >> $GITHUB_OUTPUT
+
+          # 2. Récupération des activités
+          echo "Tentative de récupération des activités sur ${API_URL}/relaxationActivities/getActivities.php"
+          ACTIVITIES_RESPONSE=$(curl -s -X GET "${API_URL}/relaxationActivities/getActivities.php" \
+            -H "Authorization: Bearer $TOKEN")
+
+          echo "Réponse des activités: $ACTIVITIES_RESPONSE"
+
+          if [ -z "$ACTIVITIES_RESPONSE" ] || [ $(echo "$ACTIVITIES_RESPONSE" | jq -e 'length == 0' 2>/dev/null) == "true" ]; then
+            echo "::error::Échec de la récupération des activités"
+            echo "Réponse complète: $ACTIVITIES_RESPONSE"
+            exit 1
+          fi
+
+          echo "✅ Récupération des activités réussie"
+          echo "Nombre d'activités: $(echo "$ACTIVITIES_RESPONSE" | jq 'length')"
+
+      # Mise à jour des labels de l'issue
+      - name: Update Issue Labels
+        if: always()
+        uses: actions/github-script@v6
+        env:
+          ISSUE_NUMBER: ${{ github.event.pull_request.number }}
+        with:
+          script: |
+            try {
+              // Trouver l'issue associée à la PR
+              const pr = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: process.env.ISSUE_NUMBER
+              });
+
+              // Extraire le numéro d'issue du titre ou de la branche
+              const issueNumber = pr.data.head.ref.match(/issue-(\d+)-/)?.[1] || 
+                                pr.data.title.match(/issue #(\d+)/i)?.[1];
+
+              if (!issueNumber) {
+                console.log('Aucun numéro d\'issue trouvé dans la PR');
+                return;
+              }
+
+              const currentLabels = (await github.rest.issues.listLabelsOnIssue({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              })).data.map(label => label.name);
+
+              // Mettre à jour les labels
+              const newLabels = currentLabels
+                .filter(label => label !== 'in progress')
+                .concat(['in test']);
+
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: newLabels
+              });
+
+              console.log(`Labels mis à jour pour l'issue #${issueNumber}`);
+            } catch (error) {
+              console.error('Erreur lors de la mise à jour des labels:', error);
+            }
