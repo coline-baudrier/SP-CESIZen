@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pull-requests: write
   deployments: write
 
@@ -55,25 +56,3 @@ jobs:
             docker system prune -f
             
             echo "🔥 Déploiement terminé avec succès !"
-
-      # 3. Mise à jour de l'issue
-      - name: Update Issue Status
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: ${{ github.event.issue.number }},
-              state: 'closed',
-              labels: ['deployed']
-            })
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: ${{ github.event.issue.number }},
-              body: '✅ Déployé en production par GitHub Actions\n\n' +
-                    `- Commit: ${process.env.GITHUB_SHA}\n` +
-                    '- Containers rebuildés et relancés'
-            })
