@@ -1,0 +1,58 @@
+name: Déploiement Production sur Backlog
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  deployments: write
+
+jobs:
+  deploy-production:
+    if: github.event.label.name == 'backlog'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      # 1. Merge dev vers production
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge dev into production
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          git checkout production
+          git merge --no-ff dev -m "Merge dev into production (Issue #${{ github.event.issue.number }})"
+          git push origin production
+
+      # 2. Déploiement sur le VPS
+      - name: SSH Deployment
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 79.137.33.245
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/SP-CESIZen
+            echo "Mise à jour du dépôt..."
+            git fetch origin
+            git checkout production
+            git pull origin production
+            
+            echo "Arrêt des containers..."
+            docker-compose down
+            
+            echo "Rebuild et redémarrage des containers..."
+            docker-compose up -d --build
+            
+            echo "Nettoyage Docker..."
+            docker system prune -f
+            
+            echo "🔥 Déploiement terminé avec succès !"
