@@ -65,19 +65,19 @@ const AppNavigator = () => {
         </TouchableOpacity>
       </View>
     ),
-    headerLeft: () => (
-      <View style={{ flexDirection: "row", marginLeft: 10 }}>
-        <TouchableOpacity
-          onPress={() =>
-            isLoggedIn
-              ? navigation.navigate("Home")
-              : navigation.navigate("CreateAccount")
-          }
-        >
-          <Icon name="home" size={24} color={colors.primary} />
-        </TouchableOpacity>
-      </View>
-    ),
+    // headerLeft: () => (
+    //   <View style={{ flexDirection: "row", marginLeft: 10 }}>
+    //     <TouchableOpacity
+    //       onPress={() =>
+    //         isLoggedIn
+    //           ? navigation.navigate("Home")
+    //           : navigation.navigate("CreateAccount")
+    //       }
+    //     >
+    //       <Icon name="home" size={24} color={colors.primary} />
+    //     </TouchableOpacity>
+    //   </View>
+    // ),
   });
 
   // Déterminez l'écran initial en fonction du rôle
@@ -101,6 +101,14 @@ const AppNavigator = () => {
           animation: "fade",
         }}
       >
+        <Stack.Screen
+          name="CreateAccount"
+          component={CreateAccount}
+          options={{
+            title: "Création de compte",
+            headerBackTitle: "Retour",
+          }}
+        />
         {/* Auth Screens (non connectés) */}
         {!isLoggedIn && (
           <>
